@@ -17,13 +17,15 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        people = format(len(self.bot.users), ",")
+        guild = self.bot.get_guild(540784184470274069)
+        people = format(len(guild.members), ",")
         watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
         await self.bot.change_presence(activity=watch)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        people = format(len(self.bot.users), ",")
+        guild = self.bot.get_guild(540784184470274069)
+        people = format(len(guild.members), ",")
         watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
         await self.bot.change_presence(activity=watch)
 
