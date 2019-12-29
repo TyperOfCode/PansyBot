@@ -8,11 +8,11 @@ import sqlite3
 import dbfunctions
 
 def get_prefix(bot, message):
-    return dbfunctions.dbselect("data.db", "SELECT prefix FROM information WHERE server=?", (601673823921635336,))
+    return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
 
 bot = commands.Bot(command_prefix=get_prefix, owner_id=144051124272365569)
 bot.remove_command("help")
-startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions"]
+startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions", "cogs.applications"]
 
 for extension in startup_extensions:
     try:

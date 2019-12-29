@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import dbfunctions
+import secrets
+from datetime import datetime
+from discord.utils import get
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -32,7 +35,9 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.guild is None:
-            ignore = [655481681741873152]
+            if message.content.startswith("p^apply"):
+                secrets.ignore.append(message.author.id)
+            ignore = secrets.ignore
             if message.author.id not in ignore:
                 guild = self.bot.get_guild(540784184470274069)
                 modmail = guild.get_channel(656491562682810386)
@@ -54,6 +59,26 @@ class Events(commands.Cog):
                 await msg.add_reaction("\U00002705")
             else:
                 pass
+        else:
+            dmEmbed = discord.Embed(title="You were mentioned.", color=0xff0000, description=f"Server: {message.guild.name}\nCategory: {message.channel.category.name}\nChannel: {message.channel.name}")
+            dmEmbed.add_field(name="Jump Link", value=f"[Click Here]({message.jump_url})", inline=False)
+            dmEmbed.add_field(name="Message:", value=message.content)
+            dmEmbed.set_footer(text=timestamp())
+            if len(message.mentions) > 0:
+                bman = message.guild.get_member(144051124272365569)
+                nanami = message.guild.get_member(231463189487943690)
+                kely = message.guild.get_member(583421490024808457)
+                if bman in message.mentions:
+                    emote = get(message.guild.emojis, name="malwow")
+                    await message.add_reaction(emote)
+                    await bman.send(embed=dmEmbed)
+                if kely in message.mentions:
+                    emote = get(message.guild.emojis, name="malkokoroWahaha")
+                    await message.add_reaction(emote)
+                if nanami in message.mentions:
+                    await nanami.send(embed=dmEmbed)
+                else:
+                    pass
         if message.content == "<@655481681741873152> prefix":
             if "developer" in [y.name.lower() for y in message.author.roles] or message.author.id == 144051124272365569:
                 print("Prefix command initiated")
@@ -67,9 +92,12 @@ class Events(commands.Cog):
                 print("Updated prefix")
                 await message.channel.send(f"My prefix has been updated to: `{newprefix}`")
         if message.channel.id == 542291426051096606 or message.channel.id == 622449628083912705:
-            if "hey" in message.content or "konnichiwa" in message.content or "konichiwa" in message.content:
-                emote = get(message.guild.emojis, name="ASwave2u")
+            if "bye" in message.content.lower() or "bai" in message.content.lower():
+                emote = get(message.guild.emojis, name="malWaveDesu")
                 await message.add_reaction(emote)
+        if message.channel.id == 660474909339680788:
+            if message.author.id != 231463189487943690:
+                await message.delete()
         if message.channel.id == 604169947286863882:
             if len(message.content) > 6:
                 await message.delete()
@@ -107,7 +135,7 @@ def printTime(datetime):
 
 def timestamp():
     now = datetime.now()
-    current_time = now.strftime("%B %d, %Y | %I:%M:%S%p")
+    current_time = now.strftime("%B %d, %Y | %I:%M:%S%p GMT")
     return current_time
 
 def setup(bot):

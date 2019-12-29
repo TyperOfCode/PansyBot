@@ -22,6 +22,29 @@ class Admin(commands.Cog):
         else:
             return False
 
+    @commands.command(name="clear")
+    @commands.is_owner()
+    async def _clear(self, ctx, number: int = None, member: discord.Member = None):
+        if number is None:
+            number = 10
+        if member is None:
+            check = None
+        elif member is not None:
+            def is_member(m):
+                return m.author == member
+            check = is_member
+        await ctx.channel.purge(limit=number, check=check)
+
+    @commands.command(name="apps")
+    async def _apps(self, ctx):
+        numApps = dbfunctions.dbselect("data.db", "SELECT count(*) FROM applied", ())
+        await ctx.send(f"We have received {format(numApps, ',')} applications")
+
+    @commands.command(name="test")
+    @commands.is_owner()
+    async def _test(self, ctx):
+        await ctx.send(dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ()))
+
     @commands.command(name="ram")
     @commands.is_owner()
     async def _ram(self, ctx):

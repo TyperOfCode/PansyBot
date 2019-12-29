@@ -47,6 +47,8 @@ class bkgrnd(commands.Cog):
             guild = self.bot.get_guild(540784184470274069)
             counting = guild.get_channel(604169947286863882)
             lastNumber = await counting.history(limit=1).flatten()
+            if lastNumber[0].author.id == self.bot.user.id:
+                return
             previous = lastNumber[0].content
             try:
                 number = int(previous)
@@ -61,6 +63,8 @@ class bkgrnd(commands.Cog):
             guild = self.bot.get_guild(540784184470274069)
             words = guild.get_channel(548017507982901258)
             lastWord = await words.history(limit=1).flatten()
+            if lastWord[0].author.id == self.bot.user.id:
+                return
             previousW = lastWord[0].content[-1:]
             try:
                 nextWord = secrets.whichLetter(previousW)
@@ -74,6 +78,9 @@ class bkgrnd(commands.Cog):
         if time == "08:00:00" or time == "02:00:00":
             guild = self.bot.get_guild(540784184470274069)
             wyr = guild.get_channel(653163640236539905)
+            option = wyr.history(limit=1).flatten()
+            if option[0].author.id == self.bot.user.id:
+                return
             try:
                 responses = ["First", "Second"]
                 embed = discord.Embed(color=0x00ffff, description=f"**{random.choice(responses)} option!**\n\n{random.choice(secrets.wyrQuestions)}")
