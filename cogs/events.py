@@ -60,11 +60,11 @@ class Events(commands.Cog):
             else:
                 pass
         else:
-            dmEmbed = discord.Embed(title="You were mentioned.", color=0xff0000, description=f"Server: {message.guild.name}\nCategory: {message.channel.category.name}\nChannel: {message.channel.name}")
-            dmEmbed.add_field(name="Jump Link", value=f"[Click Here]({message.jump_url})", inline=False)
-            dmEmbed.add_field(name="Message:", value=message.content)
-            dmEmbed.set_footer(text=timestamp())
             if len(message.mentions) > 0:
+                dmEmbed = discord.Embed(title="You were mentioned.", color=0xff0000, description=f"Server: {message.guild.name}\nCategory: {message.channel.category.name}\nChannel: {message.channel.name}")
+                dmEmbed.add_field(name="Jump Link", value=f"[Click Here]({message.jump_url})", inline=False)
+                dmEmbed.add_field(name="Message:", value=message.content)
+                dmEmbed.set_footer(text=timestamp())
                 bman = message.guild.get_member(144051124272365569)
                 nanami = message.guild.get_member(231463189487943690)
                 kely = message.guild.get_member(583421490024808457)
@@ -79,16 +79,14 @@ class Events(commands.Cog):
                     await nanami.send(embed=dmEmbed)
                 else:
                     pass
-        if message.content == "<@655481681741873152> prefix":
+        if message.content == "<@!655481681741873152> prefix":
             if "developer" in [y.name.lower() for y in message.author.roles] or message.author.id == 144051124272365569:
-                print("Prefix command initiated")
-                prefix = dbfunctions.dbselect("data.db", "SELECT prefix FROM information WHERE server=?", (601673823921635336,))
-                print("Prefix selected")
+                prefix = dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
                 await message.channel.send(f"My current prefix is set to: `{prefix}`")
-        elif message.content.startswith("<@655481681741873152> prefix "):
+        elif message.content.startswith("<@!655481681741873152> prefix "):
             if "developer" in [y.name.lower() for y in message.author.roles] or message.author.id == 144051124272365569:
-                newprefix = message.content[29:]
-                dbfunctions.dbupdate("data.db", "UPDATE information SET prefix=? WHERE Server=601673823921635336", (newprefix,))
+                newprefix = message.content[30:]
+                dbfunctions.dbupdate("data.db", "UPDATE information SET prefix=?", (newprefix,))
                 print("Updated prefix")
                 await message.channel.send(f"My prefix has been updated to: `{newprefix}`")
         if message.channel.id == 542291426051096606 or message.channel.id == 622449628083912705:
