@@ -93,8 +93,9 @@ class Events(commands.Cog):
             if "bye" in message.content.lower() or "bai" in message.content.lower():
                 emote = get(message.guild.emojis, name="malWaveDesu")
                 await message.add_reaction(emote)
-        if message.channel.id == 660474909339680788:
-            if message.author.id != 231463189487943690 or message.author.id != self.bot.user.id:
+        if message.channel.id == 660474909339680788: #Applications
+            bypass = [231463189487943690, 655481681741873152]
+            if message.author.id not in bypass:
                 await message.delete()
         if message.channel.id == 604169947286863882:
             if len(message.content) > 6:
