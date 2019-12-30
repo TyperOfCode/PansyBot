@@ -94,7 +94,7 @@ class Events(commands.Cog):
                 emote = get(message.guild.emojis, name="malWaveDesu")
                 await message.add_reaction(emote)
         if message.channel.id == 660474909339680788:
-            if message.author.id != 231463189487943690:
+            if message.author.id != 231463189487943690 or message.author.id != self.bot.user.id:
                 await message.delete()
         if message.channel.id == 604169947286863882:
             if len(message.content) > 6:
