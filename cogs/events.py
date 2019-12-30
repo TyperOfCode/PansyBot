@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import dbfunctions
 import secrets
+import string
 from datetime import datetime
 from discord.utils import get
 
@@ -114,10 +115,9 @@ class Events(commands.Cog):
                     await message.delete()
         if message.channel.id == 548017507982901258:
             if message.author.id != self.bot.user.id:
-                validLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
                 if len(message.content) <= 20:
                     for letter in message.content:
-                        if letter.lower() not in validLetters:
+                        if letter.lower() not in string.ascii_letters:
                             await message.delete()
                     targetLetter = message.content[-1:]
                     if targetLetter.lower() in validLetters:
