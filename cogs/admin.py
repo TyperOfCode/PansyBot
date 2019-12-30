@@ -51,9 +51,9 @@ class Admin(commands.Cog):
     async def _ram(self, ctx):
         process = psutil.Process(os.getpid())
         ramBytes = process.memory_info().rss
-        ramKilo = round(ramBytes/1000, 2)
-        ramMega = round(ramKilo/1000, 2)
-        ramGiga = round(ramMega/1000, 2)
+        ramKilo = round(ramBytes/1024, 2)
+        ramMega = round(ramKilo/1024, 2)
+        ramGiga = round(ramMega/1024, 2)
         embed = discord.Embed(title=f"RAM Usage | {self.bot.user.name}#{self.bot.user.discriminator}", color=0x00ffff, description=f"Bytes: {ramBytes}\nKilobytes: {ramKilo}\nMegabytes: {ramMega}\nGigabytes: {ramGiga}")
         await ctx.send(embed=embed)
 
