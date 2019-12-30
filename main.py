@@ -6,6 +6,7 @@ import random
 import datetime
 import sqlite3
 import dbfunctions
+import os
 
 def get_prefix(bot, message):
     return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
@@ -29,6 +30,15 @@ async def on_ready():
     people = format(len(guild.members), ",")
     watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
     await bot.change_presence(activity=watch)
+
+@bot.command(name="restart")
+@commands.is_owner()
+async def _restart(ctx):
+    FILEPATH = os.path.abspath(__file__)
+    FILEDIR = FILEPATH.replace(os.path.basename(FILEPATH),'')
+
+    os.system('python3 %s'%(FILEPATH))
+    exit()
 
 @bot.command(name="load")
 @commands.is_owner()
