@@ -120,7 +120,7 @@ class Events(commands.Cog):
                         if letter.lower() not in string.ascii_letters:
                             await message.delete()
                     targetLetter = message.content[-1:]
-                    if targetLetter.lower() in validLetters:
+                    if targetLetter.lower() in string.ascii_letters:
                         target = await message.channel.history(limit=2).flatten()
                         if target[1].content[-1:].lower() == target[0].content[:1].lower():
                             pass
