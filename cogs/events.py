@@ -129,13 +129,10 @@ class Events(commands.Cog):
                 else:
                     await message.delete()
 
-def printTime(datetime):
-    return datetime.strftime("%B %d, %Y | %I:%M:%S%p")
-
-def timestamp():
-    now = datetime.now()
-    current_time = now.strftime("%B %d, %Y | %I:%M:%S%p GMT")
-    return current_time
+def printTime(datetime = None):
+    if datetime is None:
+        datetime = datetime.now()
+    return datetime.strftime("%B %d, %Y | %I:%M:%S%p GMT")
 
 def setup(bot):
     bot.add_cog(Events(bot))
