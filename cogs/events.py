@@ -65,7 +65,7 @@ class Events(commands.Cog):
                 dmEmbed = discord.Embed(title="You were mentioned.", color=0xff0000, description=f"Server: {message.guild.name}\nCategory: {message.channel.category.name}\nChannel: {message.channel.name}")
                 dmEmbed.add_field(name="Jump Link", value=f"[Click Here]({message.jump_url})", inline=False)
                 dmEmbed.add_field(name="Message:", value=message.content)
-                dmEmbed.set_footer(text=timestamp())
+                dmEmbed.set_footer(text=printTime())
                 bman = message.guild.get_member(144051124272365569)
                 nanami = message.guild.get_member(231463189487943690)
                 kely = message.guild.get_member(583421490024808457)
