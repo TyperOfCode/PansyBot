@@ -265,7 +265,7 @@ class Applications(commands.Cog):
                                                                 confirmEmbed = discord.Embed(title="Thank you for your time.", color=0x00ff00, description="This application will be forwarded to the Moderation team, and someone will reach out to you if you are a good fit.")
                                                                 await msg.edit(embed=confirmEmbed, delete_after=30)
                                                                 secrets.ignore.remove(ctx.author.id)
-                                                                appchan = ctx.guild.get_channel(660474909339680788)
+                                                                appchan = ctx.guild.get_channel(657965850057506827)
                                                                 appl = await appchan.send(embed=applicationEmbed)
                                                                 await appl.add_reaction(secrets.checkmark)
                                                                 await appl.add_reaction(secrets.crossmark)
