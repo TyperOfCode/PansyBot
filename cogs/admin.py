@@ -32,7 +32,7 @@ class Admin(commands.Cog):
     async def _one(self, ctx):
         embed = discord.Embed(title="Language", color=0xff00ff, description="The only language you're allowed to use is English, alongside common Romaji terms/phrases.\n\nE.g. Konichiwa")
         embed.set_author(name="Rule 1")
-        enbed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="clear")
