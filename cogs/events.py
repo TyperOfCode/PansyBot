@@ -99,7 +99,7 @@ class Events(commands.Cog):
             if message.author.id not in bypass:
                 await message.delete()
         if message.channel.id == 604169947286863882:
-            if len(message.content) > 6:
+            if len(message.content) > 7:
                 await message.delete()
             else:
                 try:
