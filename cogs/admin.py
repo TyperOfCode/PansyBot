@@ -28,7 +28,12 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def _afk(self, ctx):
         secrets.afk = not secrets.afk
-        await ctx.send(f"Your afk status is set to: {secrets.afk}")
+        if secrets.afk:
+            color = 0x00ff00
+        else:
+            color = 0xff0000
+        embed = discord.Embed(color=color, description=f"{ctx.author.mention}, Your AFK status is currently set to: {secrets.afk}")
+        await ctx.send(embed=embed)
 
     @commands.group(name="rule")
     async def _rule(self, ctx):
