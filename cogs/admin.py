@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import datetime
+import secrets
 from datetime import datetime
 from discord.ext import commands
 from discord.utils import get
@@ -22,6 +23,12 @@ class Admin(commands.Cog):
             return True
         else:
             return False
+
+    @commands.command(name="afk")
+    @commands.is_owner()
+    async def _afk(self, ctx):
+        secrets.afk = not secrets.afk
+        await ctx.send(f"Your afk status is set to: {secrets.afk}")
 
     @commands.group(name="rule")
     async def _rule(self, ctx):

@@ -34,6 +34,7 @@ async def on_ready():
 @bot.command(name="restart")
 @commands.is_owner()
 async def _restart(ctx):
+    await ctx.send("Restarting...", delete_after=5)
     FILEPATH = os.path.abspath(__file__)
     FILEDIR = FILEPATH.replace(os.path.basename(FILEPATH),'')
 
