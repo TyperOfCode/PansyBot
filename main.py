@@ -13,7 +13,7 @@ def get_prefix(bot, message):
 
 bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690])
 bot.remove_command("help")
-startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions", "cogs.applications"]
+startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions", "cogs.applications", "cogs.cotd"]
 
 for extension in startup_extensions:
     try:
