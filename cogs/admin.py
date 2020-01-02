@@ -35,11 +35,16 @@ class Admin(commands.Cog):
             await ctx.author.send("Which rule would you like?\n\nEx: **p^rule** <number>")
 
     @_rule.command(name="1")
-    async def _one(self, ctx):
+    async def _one(self, ctx, member: discord.Member = None):
         embed = discord.Embed(title="Language", color=0xff00ff, description="The only language you're allowed to use is English, alongside common Romaji terms/phrases.\n\nE.g. Konichiwa")
         embed.set_author(name="Rule 1")
         embed.set_thumbnail(url=ctx.guild.icon_url)
-        await ctx.send(embed=embed)
+        await ctx.message.delete()
+        if member is None:
+            pass
+        else:
+            await ctx.send(member.mention, delete_after=30)
+        await ctx.send(embed=embed, delete_after=30)
 
     @commands.command(name="clear")
     @commands.is_owner()
