@@ -70,8 +70,8 @@ class Events(commands.Cog):
                 nanami = message.guild.get_member(231463189487943690)
                 kely = message.guild.get_member(583421490024808457)
                 if bman in message.mentions:
-                    if secrets.afk:
-                        await message.channel.send("Sorry. BMan is currently afk... I sent him a DM for you, he'll get back to you as soon as possible!")
+                    if secrets.afkBMan:
+                        await message.channel.send("Sorry. BMan is currently afk... I sent them a DM for you, they'll get back to you as soon as possible!")
                     emote = get(message.guild.emojis, name="malwow")
                     await message.add_reaction(emote)
                     await bman.send(embed=dmEmbed)
@@ -79,6 +79,8 @@ class Events(commands.Cog):
                     emote = get(message.guild.emojis, name="malkokoroWahaha")
                     await message.add_reaction(emote)
                 if nanami in message.mentions:
+                    if secrets.afkNanami:
+                        await message.channel.send("Sorry. Nanami is currently afk... I sent them a DM for you, they'll get back to you as soon as possible!")
                     await nanami.send(embed=dmEmbed)
                 else:
                     pass
