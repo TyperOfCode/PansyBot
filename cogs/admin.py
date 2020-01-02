@@ -29,21 +29,6 @@ class Admin(commands.Cog):
         else:
             return False
 
-    @commands.command(name="afk")
-    @commands.check(owner)
-    async def _afk(self, ctx):
-        secrets.afk = not secrets.afk
-        if secrets.afk:
-            color = 0x00ff00
-            nickname = "BMan ᵒⁿ ᵐᵒᵇᶦˡᵉ"
-        else:
-            color = 0xff0000
-            nickname = "ᴰᵉᵛᵉˡᵒᵖᵉʳ BMan"
-        if ctx.author.id == 144051124272365569:
-            await ctx.author.send(nickname)
-        embed = discord.Embed(color=color, description=f"{ctx.author.mention}, Your AFK status is currently set to: {secrets.afk}")
-        await ctx.send(embed=embed)
-
     @commands.group(name="rule")
     async def _rule(self, ctx):
         if ctx.invoked_subcommand is None:
