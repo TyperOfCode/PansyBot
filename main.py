@@ -11,7 +11,7 @@ import os
 def get_prefix(bot, message):
     return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
 
-bot = commands.Bot(command_prefix=get_prefix, owner_id=144051124272365569)
+bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690])
 bot.remove_command("help")
 startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions", "cogs.applications"]
 
