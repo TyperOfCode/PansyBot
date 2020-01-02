@@ -74,8 +74,8 @@ class bkgrnd(commands.Cog):
 
     @tasks.loop(seconds=1)
     async def wyr(self):
-        time = datetime.datetime.now().strftime("%I:%M:%S")
-        if time == "08:00:00" or time == "02:00:00":
+        time = datetime.datetime.now().strftime("%I:%M")
+        if time == "08:00" or time == "02:00":
             guild = self.bot.get_guild(540784184470274069)
             wyr = guild.get_channel(653163640236539905)
             option = wyr.history(limit=1).flatten()
