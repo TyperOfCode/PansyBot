@@ -81,21 +81,39 @@ class cotd(commands.Cog):
                         if channelm == None:
                             await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to add to the list',ctx.guild))
                             return
+
+                        multiple = False
+
+                        if len(ctx.message.channel_mentions) > 1:
+                            multiple = True
+
+                        multilist = []
                        
+                        
+                        for i in ctx.message.channel_mentions:
+                            ### alrighty here we go
 
-                        ### alrighty here we go
+                            channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+                            if str(i.id) in [i.split('|')[0] for i in channellist]:
+                                await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{i.mention} is already in the list, skipping..',ctx.guild))
+                                pass
+                            
+                            if not multiple:
+                                await ctx.send(embed=self.acceptembed('Success!',f'Channel {i.mention} has been added to the list',ctx.guild))
+                            
+                            write = open(self.SAVELOC + 'cotd.txt','a')
+                            write.write(f"\n{i.id}|0")
+                            write.close()
 
-                        channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+                            multilist.append(i)
 
-                        if str(channelm.id) in [i.split('|')[0] for i in channellist]:
-                            await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{channelm.mention} is already in the list',ctx.guild))
-                            return
-
-                        await ctx.send(embed=self.acceptembed('Success!',f'Channel {channelm.mention} has been added to the list',ctx.guild))
-
-                        write = open(self.SAVELOC + 'cotd.txt','a')
-                        write.write(f"\n{channelm.id}|0")
-                        write.close()
+                        
+                        if multiple:
+                            channelmentions = ''
+                            for i in multilist:
+                                channelmentions += f'{i.mention}, '
+                            
+                            await ctx.send(embed=self.acceptembed('Success!',f'Channels {channelmentions} have been added to the list',ctx.guild))
 
 
 
@@ -188,34 +206,32 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
+
             
-                if self.servercheck(ctx.guild.id):
+            if self.servercheck(ctx.guild.id):
+                
                     
-                      
-                        channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+                    channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
 
-                        chanstr = ''
+                    chanstr = ''
 
-                        for i in channellist:
-                            if i == '':
-                                continue
-                            splitted = i.split('|')
+                    for i in channellist:
+                        if i == '':
+                            continue
+                        splitted = i.split('|')
 
-                            channel = await self.bot.fetch_channel(int(splitted[0]))
+                        channel = await self.bot.fetch_channel(int(splitted[0]))
 
-                            chanstr += f'{channel.mention} - {self.yesno(splitted[1])}\n'
-                        if chanstr != '':
-                            await ctx.send(embed=self.miscembed('Channel List',chanstr,ctx.guild))
-                        else:
-                            await ctx.send(embed=self.miscembed('Channel list','The channel list is empty!',ctx.guild))
-                        return
-                else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
-
+                        chanstr += f'{channel.mention} - {self.yesno(splitted[1])}\n'
+                    if chanstr != '':
+                        await ctx.send(embed=self.miscembed('Channel List',chanstr,ctx.guild))
+                    else:
+                        await ctx.send(embed=self.miscembed('Channel list','The channel list is empty!',ctx.guild))
+                    return
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+
+            
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
@@ -240,19 +256,18 @@ class cotd(commands.Cog):
                         st = ''
                         for i in channellist:
                             if i != '':
-                                st += '\n{}|0'.format(i.split('|')[0])
+                                try:
+                                    trye = await self.bot.fetch_channel(int(i.split('|')[0]))
+                                    st += '\n{}|0'.format(i.split('|')[0])
+                                except:
+                                    pass
 
                         write = open(self.SAVELOC + 'cotd.txt','w')
                         write.write(st)
                         write.close()
 
 
-                        for i in ctx.guild.text_channels:
-                            if i.name.endswith('\u2705'):
-                                try:
-                                    await i.edit(name=i.name[:-1])
-                                except:
-                                    pass
+                        
 
                         
 
@@ -309,14 +324,46 @@ class cotd(commands.Cog):
                             try:
                                 returnchannel = await self.bot.fetch_channel(int(save[0]))
                                 returncategory = await self.bot.fetch_channel(int(save[2]))
-                                await ctx.send(embed=self.errorembed('List is complete or empty','Cant choose from complete or empty list',ctx.guild))
+                                await ctx.send(embed=self.errorembed('List is complete or empty','Cant choose from complete or empty list\n - List has auto been resetted',ctx.guild))
                                 try:
-                                    await returnchannel.edit(name=save[1] + ' \u2705',category=returncategory,position=int(save[3]))
+                                    await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                                 except:
                                     pass
-                                return
+                                
                             except:
-                                return
+                                pass
+
+                            channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+                            
+                            
+                            st = ''
+                            for i in channellist:
+                                if i != '':
+                                    st += '\n{}|0'.format(i.split('|')[0])
+
+                            write = open(self.SAVELOC + 'cotd.txt','w')
+                            write.write(st)
+                            write.close()
+
+                           
+
+        
+                            reset = open(self.SAVELOC + 'cotdSave.txt','w')
+                            reset.close()
+
+                            chooselist = []
+
+                            channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+
+                            for i in channellist:
+                                if '|0' in i:
+                                    chooselist.append(int(i.split('|')[0]))
+
+                            save = open(self.SAVELOC + 'cotdSave.txt','r').read().split('\n')
+
+                            
+
+                            
                         
                         channel = await self.bot.fetch_channel(int(choice(chooselist)))
 
@@ -339,7 +386,7 @@ class cotd(commands.Cog):
                             except:
                                 pass
                             try:
-                                await returnchannel.edit(name=save[1] + ' \u2705',category=returncategory,position=int(save[3]))
+                                await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                             except:
                                 pass
                             
@@ -347,7 +394,7 @@ class cotd(commands.Cog):
                         new.write(f'{channel.id}\n{channel.name}\n{channel.category_id}\n{channel.position}')
                         new.close()
 
-                        newname = '\N{gem stone} '
+                        newname = '\N{tulip}\u30FB'
                         for i in channel.name:
                             if i in string.ascii_letters or i == '-':
                                 newname += i
@@ -395,13 +442,44 @@ class cotd(commands.Cog):
                 try:
                     returnchannel = await self.bot.fetch_channel(int(save[0]))
                     returncategory = await self.bot.fetch_channel(int(save[2]))
+
                     try:
-                        await returnchannel.edit(name=save[1] + ' \u2705',category=returncategory,position=int(save[3]))
+                        await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                     except:
                         pass
-                    return
+                    
                 except:
-                    return
+                    pass
+
+                channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+                
+                
+                st = ''
+                for i in channellist:
+                    if i != '':
+                        st += '\n{}|0'.format(i.split('|')[0])
+
+                write = open(self.SAVELOC + 'cotd.txt','w')
+                write.write(st)
+                write.close()
+
+                
+
+
+                reset = open(self.SAVELOC + 'cotdSave.txt','w')
+                reset.close()
+
+                chooselist = []
+
+                channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
+
+                for i in channellist:
+                    if '|0' in i:
+                        chooselist.append(int(i.split('|')[0]))
+
+                save = open(self.SAVELOC + 'cotdSave.txt','r').read().split('\n')
+
+                
             
             channel = await self.bot.fetch_channel(int(choice(chooselist)))
 
@@ -424,7 +502,7 @@ class cotd(commands.Cog):
                 except:
                     pass
                 try:
-                    await returnchannel.edit(name=save[1] + ' \u2705',category=returncategory,position=int(save[3]))
+                    await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                 except:
                     pass
                 
@@ -432,13 +510,16 @@ class cotd(commands.Cog):
             new.write(f'{channel.id}\n{channel.name}\n{channel.category_id}\n{channel.position}')
             new.close()
 
-            newname = '\N{gem stone} '
+            newname = '\N{tulip}\u30FB'
             for i in channel.name:
                 if i in string.ascii_letters or i == '-':
                     newname += i
 
             try:
+                
                 await channel.edit(name=newname,category=None)
+
+                
                 pingrole = get(get(self.bot.guilds,id=self.serverid).roles,id=self.pingroleid)
                 await pingrole.edit(mentionable=True)
                 await channel.send(f'{pingrole.mention}',delete_after=2)
