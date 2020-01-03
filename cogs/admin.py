@@ -29,32 +29,22 @@ class Admin(commands.Cog):
         else:
             return False
 
-    @commands.command(name="afk")
-    @commands.check(owner)
-    async def _afk(self, ctx):
-        secrets.afk = not secrets.afk
-        if secrets.afk:
-            color = 0x00ff00
-            nickname = "BMan ᵒⁿ ᵐᵒᵇᶦˡᵉ"
-        else:
-            color = 0xff0000
-            nickname = "ᴰᵉᵛᵉˡᵒᵖᵉʳ BMan"
-        if ctx.author.id == 144051124272365569:
-            await ctx.author.send(nickname)
-        embed = discord.Embed(color=color, description=f"{ctx.author.mention}, Your AFK status is currently set to: {secrets.afk}")
-        await ctx.send(embed=embed)
-
     @commands.group(name="rule")
     async def _rule(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.author.send("Which rule would you like?\n\nEx: **p^rule** <number>")
 
     @_rule.command(name="1")
-    async def _one(self, ctx):
+    async def _one(self, ctx, member: discord.Member = None):
         embed = discord.Embed(title="Language", color=0xff00ff, description="The only language you're allowed to use is English, alongside common Romaji terms/phrases.\n\nE.g. Konichiwa")
         embed.set_author(name="Rule 1")
         embed.set_thumbnail(url=ctx.guild.icon_url)
-        await ctx.send(embed=embed)
+        await ctx.message.delete()
+        if member is None:
+            pass
+        else:
+            await ctx.send(member.mention, delete_after=30)
+        await ctx.send(embed=embed, delete_after=30)
 
     @commands.command(name="clear")
     @commands.is_owner()

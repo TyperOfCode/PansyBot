@@ -43,9 +43,9 @@ class cotd(commands.Cog):
         return embed
 
     def adminperms(self, ctx):
-        if "developer" in [y.name.lower() for y in ctx.author.roles]:
+        if 542297369698369546 in [y.id for y in ctx.author.roles]:
             return True
-        elif "admin" in [y.name.lower() for y in ctx.author.roles]:
+        elif 611661848961351691 in [y.id for y in ctx.author.roles]:
             return True
         else:
             return False
@@ -63,7 +63,7 @@ class cotd(commands.Cog):
                 `{p}channel removeall` - clears the cotd choicelist
                 `{p}channel reset` - resets the channels
                 `{p}channel choosenow` - Chooses a cotd channel immediately
-                """.replace('            ','').format(p=self.bot.command_prefix)
+                """.replace('            ','').format(p='p^')
 
                 await ctx.send(embed=self.miscembed('Channel Help Page',page,ctx.guild)) 
 
@@ -96,7 +96,7 @@ class cotd(commands.Cog):
                             channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
                             if str(i.id) in [i.split('|')[0] for i in channellist]:
                                 await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{i.mention} is already in the list, skipping..',ctx.guild))
-                                pass
+                                continue
                             
                             if not multiple:
                                 await ctx.send(embed=self.acceptembed('Success!',f'Channel {i.mention} has been added to the list',ctx.guild))
@@ -107,7 +107,6 @@ class cotd(commands.Cog):
 
                             multilist.append(i)
 
-                        
                         if multiple:
                             channelmentions = ''
                             for i in multilist:
@@ -115,16 +114,12 @@ class cotd(commands.Cog):
                             
                             await ctx.send(embed=self.acceptembed('Success!',f'Channels {channelmentions} have been added to the list',ctx.guild))
 
-
-
                         return
                 else:
                     await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
-
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
                 return 
-
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
 
@@ -426,7 +421,7 @@ class cotd(commands.Cog):
     async def cotdchoose(self):
 
 
-        time = datetime.now().strftime("%I:%M:%S")
+        time = datetime.now().strftime("%H:%M:%S")
         if time == '00:00:00':
             chooselist = []
 

@@ -11,9 +11,16 @@ import os
 def get_prefix(bot, message):
     return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
 
-bot = commands.Bot(command_prefix=get_prefix, owner_id=144051124272365569)
+bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690])
 bot.remove_command("help")
-startup_extensions = ["cogs.admin", "cogs.bkgrnd", "cogs.events", "dbfunctions", "cogs.applications"]
+
+withincogs = os.listdir("/root/Pansy/cogs")
+startup_extensions = []
+for item in withincogs:
+    if "." not in item:
+        withincogs.remove(item)
+    else:
+        startup_extensions.append(f"cogs.{item[:-3]}")
 
 for extension in startup_extensions:
     try:
@@ -34,11 +41,9 @@ async def on_ready():
 @bot.command(name="restart")
 @commands.is_owner()
 async def _restart(ctx):
-    await ctx.send("Restarting...", delete_after=5)
     FILEPATH = os.path.abspath(__file__)
     FILEDIR = FILEPATH.replace(os.path.basename(FILEPATH),'')
-
-    os.system('python3 %s'%(FILEPATH))
+    os.system('python3 %s'%(FILEPATH)) ## this just restarts teh file
     exit()
 
 @bot.command(name="load")
