@@ -33,6 +33,7 @@ for extension in startup_extensions:
 async def on_ready():
     print("Username: {0.name}#{0.discriminator}\nID: {0.id}".format(bot.user))
     print(f"Using discord.py v{discord.__version__}")
+    print(f"Startup Extensions: {startup_extensions}")
     guild = bot.get_guild(540784184470274069)
     people = format(len(guild.members), ",")
     watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
