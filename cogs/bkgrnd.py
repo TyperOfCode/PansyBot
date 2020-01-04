@@ -1,13 +1,17 @@
 import discord
 import random
 import secrets
+import gspread
 import datetime
+from oauth2client.service_account import ServiceAccountCredentials
+from gspread_formatting import *
 from discord.utils import get
 from discord.ext import tasks, commands
 
 class bkgrnd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.sheetcolor.start()
         self.counting.start()
         self.wordsplay.start()
         self.wyr.start()
@@ -15,11 +19,37 @@ class bkgrnd(commands.Cog):
         self.network.start()
 
     def cog_unload(self):
+        self.sheetcolor.cancel()
         self.counting.cancel()
         self.wordsplay.cancel()
         self.wyr.cancel()
         self.vip.cancel()
         self.network.cancel()
+
+    @tasks.loop(minutes=1)
+    async def sheetcolor(self):
+        sheet = connectSheet("test")
+        # COLOR FORMAT DECLARATION
+        fmt = cellFormat(backgroundColor=color(0.64, 0.76, 0.96))
+        fmt2 = cellFormat(backgroundColor=color(0.71, 0.84, 0.66))
+        # COLOR FORMAT DECLARATION
+
+        # DATETIME OBJECT COLLECTION
+        hour = datetime.utcnow().strftime("%H:00")
+        day = datetime.utcnow().strftime("%A, %b %d")
+        # DATETIME OBJECT COLLECTION
+
+        # GOOGLE SHEET OPERATIONS
+        daycell = sheet.find(day) # Finds day cell
+        cell = sheet.find(hour) # Finds hour cell
+        row = daycell.row # Row for day cell
+        column = cell.col # Column for hour cell
+        day = rowcol_to_a1(row, 1) # Day cell still (This is for formatting)
+        hourCell1 = rowcol_to_a1(row, column) # 2 Cells beside each other.
+        hourCell2 = rowcol_to_a1(row, column+1) # To accomodate for the hour.
+        colorRange = f"{hourCell1}:{hourCell2}"
+        format_cell_ranges(sheet, [(f'A1:AW10', fmt), (day, fmt2), (colorRange, fmt2)])
+        # GOOGLE SHEET OPERATIONS
 
     @tasks.loop(seconds=1)
     async def network(self):
@@ -91,6 +121,13 @@ class bkgrnd(commands.Cog):
                 await msg.add_reaction(second)
             except Exception as e:
                 print(e)
+
+def connectSheet(name):
+    scope = ["https://spreadsheets.google.com/feeds","https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+    client = gspread.authorize(creds)
+    sheet = client.open("My Anime Land Activity").worksheet(name)
+    return sheet
 
 def setup(bot):
     bot.add_cog(bkgrnd(bot))
