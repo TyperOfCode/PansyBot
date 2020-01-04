@@ -42,7 +42,7 @@ class Rules(commands.Cog):
 
     @_rule.command(name="3")
     async def _three(self, ctx, member: discord.Member = None):
-        embed = discord.Embed(title="Advertisement", color=0xef5efa9, description="Don't Advertise for any server or any community which isn't related to MAL")
+        embed = discord.Embed(title="Advertisement", color=0xef5efa, description="Don't Advertise for any server or any community which isn't related to MAL")
         embed.set_author(name="Rule 3")
         embed.set_thumbnail(url=ctx.guild.icon_url)
         await ctx.message.delete()
