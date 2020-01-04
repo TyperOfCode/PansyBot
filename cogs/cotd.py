@@ -440,7 +440,7 @@ class cotd(commands.Cog):
 
                     try:
                         await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
-                    except:
+
                         pass
                     
                 except:
