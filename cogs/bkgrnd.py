@@ -26,7 +26,7 @@ class bkgrnd(commands.Cog):
         self.vip.cancel()
         self.network.cancel()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(hours=1)
     async def sheetcolor(self):
         sheet = connectSheet("test")
         # COLOR FORMAT DECLARATION
