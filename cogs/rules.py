@@ -4,17 +4,17 @@ from discord.ext import commands
 class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    async def cog_check(ctx):
+    async def cog_check(self, ctx):
         if len(set([y.id for y in ctx.author.roles]).intersection([542297369698369546, 611661848961351691, 542298007765516298])) > 0:
             return True
         else:
-            await ctx.send("I'm sorry, you don't have permissions for that.")
+            await ctx.send("I'm sorry, you don't have permissions for that.", delete_after=5)
             return False
 
     @commands.group(name="rule")
     async def _rule(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.author.send("Which rule would you like?\n\nEx: **p^rule** <number>")
+            await ctx.send("Which rule would you like?\n\nEx: **p^rule** <number>", delete_after=10)
 
     @_rule.command(name="1")
     async def _one(self, ctx, member: discord.Member = None):
@@ -66,7 +66,7 @@ class Rules(commands.Cog):
 
     @_rule.command(name="5")
     async def _five(self, ctx, member: discord.Member = None):
-        embed = discord.Embed(title="Spam", color=0xcea9a3, description="Don't Spam. This includes Characters, Emotes, Images, and Message spam. Don't overuse reactions, as well as any other form of spamming.")
+        embed = discord.Embed(title="Spam", color=0xf1bebd, description="Don't Spam. This includes Characters, Emotes, Images, and Message spam. Don't overuse reactions, as well as any other form of spamming.")
         embed.set_author(name="Rule 5")
         embed.set_thumbnail(url=ctx.guild.icon_url)
         await ctx.message.delete()
