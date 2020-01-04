@@ -11,6 +11,15 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    async def on_guild_update(self, before, after):
+        if before.premium_subscription_count < after.premium_subscription_count:
+            boosters1 = before.premium_subscribers
+            boosters2 = after.premium_subscribers
+            boosters3 = set(boosters1).symmetric_difference(set(boosters2))
+            bman = after.get_member(144051124272365569)
+            await bman.send(f"{boosters3} boosted {after.name}")
+
+    @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.channel_id == 656491562682810386:
             if str(payload.emoji) == "\U00002705":
