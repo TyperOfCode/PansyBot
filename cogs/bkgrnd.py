@@ -29,8 +29,6 @@ class bkgrnd(commands.Cog):
     @tasks.loop(minutes=1)
     async def sheetcolor(self):
         if datetime.datetime.now().strftime("%M") == "00":
-            bman = self.bot.get_user(144051124272365569)
-            await bman.send(datetime.datetime.utcnow())
             sheet = connectSheet("test")
             # COLOR FORMAT DECLARATION
             fmt = cellFormat(backgroundColor=color(0.64, 0.76, 0.96))
@@ -52,7 +50,6 @@ class bkgrnd(commands.Cog):
             hourCell2 = rowcol_to_a1(row, column+1) # To accomodate for the hour.
             colorRange = f"{hourCell1}:{hourCell2}"
             format_cell_ranges(sheet, [(f'A1:AW10', fmt), (day, fmt2), (colorRange, fmt2)])
-            await bman.send(datetime.datetime.utcnow())
             # GOOGLE SHEET OPERATIONS
 
     @tasks.loop(hours=6)
