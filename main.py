@@ -12,7 +12,6 @@ def get_prefix(bot, message):
     return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
 
 bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690], description="Prodominently moderation focused bot. Used for automation and statistics.")
-bot.remove_command("help")
 
 withincogs = os.listdir("/root/Pansy/cogs")
 startup_extensions = []

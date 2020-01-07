@@ -14,20 +14,55 @@ import psutil
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    async def modperms(ctx):
-        if "mod" in [y.name.lower() for y in ctx.author.roles]:
+
+    def helperPlus(ctx):
+        allowed = [652732584299593759, 600837848169578516, 542297369698369546, 611661848961351691, 542298007765516298]
+        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
             return True
-        elif "developer" in [y.name.lower() for y in ctx.author.roles]:
+        return False
+
+    def modPlus(ctx):
+        allowed = [542297369698369546, 611661848961351691, 542298007765516298]
+        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
             return True
-        elif "admin" in [y.name.lower() for y in ctx.author.roles]:
+        return False
+
+    def adminPlus(ctx):
+        allowed = [611661848961351691, 542297369698369546]
+        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
             return True
-        else:
-            return False
-    async def owner(ctx):
-        if ctx.author.id == 231463189487943690 or ctx.author.id == 144051124272365569:
-            return True
-        else:
-            return False
+        return False
+
+    @commands.command(name="gay")
+    async def _gay(self, ctx):
+        if ctx.author.id == 319395686699499520:
+            await ctx.send("No u")
+
+    @commands.command(name="embed")
+    async def _embed(self, ctx, channel: discord.TextChannel = None):
+        msg = await ctx.channel.fetch_message(663562205534617601)
+        embed = discord.Embed(title="**__Donations__**", color=0x00ff00, description="<a:MalStars:612406936435949569>We appreciate your kindness to support us!\n<a:MalStars:612406936435949569>We promise to use your donations for the improvements of the server.\n\n<a:malStar1:614619624268365829> All donors can have:\n<a:MalGift:637197769534078987> **Color roles.**\n<a:MalGift:637197769534078987> **Nickname Change.**\n<a:MalGift:637197769534078987> **VIPs have access to VIP channels.**\n\n<a:malHeartW:608278535613841408> We can't offer you what equals the amount of love and support you provide us, but we would love to hear out your wishes and any perks you'd like to have for donating! <a:malHeartW:608278535613841408>\n\n\n**[Click here to donate!](https://donatebot.io/checkout/540784184470274069)**")
+        await msg.edit(embed=embed)
+
+    @commands.command(name="db")
+    @commands.is_owner()
+    async def _db(self, ctx):
+        ids = dbfunctions.dbselectmore("data.db", "SELECT ID FROM shiftReminders", ())
+        members = []
+        for id in ids:
+            print(f"member = ctx.guild.get_member({id})")
+            member = ctx.guild.get_member(id)
+            print(f"members.append({member})")
+            members.append(member)
+        for member in members:
+            if 652732584299593759 in [y.id for y in member.roles]:
+                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (5, member.id,))
+            elif 600837848169578516 in [y.id for y in member.roles]:
+                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (18, member.id,))
+            elif 542298007765516298 in [y.id for y in member.roles]:
+                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (12, member.id,))
+            print(member)
+        await ctx.send("Done", delete_after=3)
 
     @commands.command(name="clear")
     @commands.is_owner()
@@ -64,7 +99,6 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="server-info")
-    @commands.check(modperms)
     async def _sinfo(self, ctx):
         bots = 0
         humans = 0
@@ -89,7 +123,6 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="members")
-    @commands.check(modperms)
     async def _members(self, ctx):
         malstaff = self.bot.get_guild(601673823921635336)
         malserver = self.bot.get_guild(540784184470274069)
@@ -104,14 +137,9 @@ class Admin(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="dm")
-    @commands.check(modperms)
-    async def _dm(self, ctx, id, *, msg: str):
-        if id.startswith("<@"):
-            id = id[3:-1]
-        id = int(id)
-        guild = ctx.guild
-        user = guild.get_member(id)
-        await user.send(msg)
+    @commands.check(modPlus)
+    async def _dm(self, ctx, member: discord.Member, *, msg: str):
+        await member.send(msg)
         await ctx.message.add_reaction("\U00002705")
 
     @commands.command(name="echo")

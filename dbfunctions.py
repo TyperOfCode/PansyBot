@@ -13,6 +13,14 @@ def dbupdate(db, sql, variables):
     conn.commit()
     return
 
+def dbselectmore(db, sql, variables):
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    c.execute(sql, variables)
+    results = c.fetchall()
+    returnable = [item for t in results for item in t]
+    return returnable
+
 def dbselect(db, sql, variables):
     conn = sqlite3.connect(db)
     c = conn.cursor()

@@ -11,6 +11,24 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if before.roles != after.roles:
+            ids = dbfunctions.dbselectmore("data.db", "SELECT ID FROM shiftReminders", ())
+            members = []
+            for id in ids:
+                print(f"member = ctx.guild.get_member({id})")
+                member = before.guild.get_member(id)
+                print(f"members.append({member})")
+                members.append(member)
+            for member in members:
+                if 652732584299593759 in [y.id for y in member.roles]:
+                    dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (5, after.id,))
+                elif 600837848169578516 in [y.id for y in member.roles]:
+                    dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (18, after.id,))
+                elif 542298007765516298 in [y.id for y in member.roles]:
+                    dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (12, after.id,))
+
+    @commands.Cog.listener()
     async def on_guild_update(self, before, after):
         if before.premium_subscription_count < after.premium_subscription_count:
             boosters1 = before.premium_subscribers
