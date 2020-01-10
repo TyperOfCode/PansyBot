@@ -5,7 +5,7 @@ class Rules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     async def cog_check(self, ctx):
-        if len(set([y.id for y in ctx.author.roles]).intersection([542297369698369546, 611661848961351691, 542298007765516298])) > 0:
+        if len(set([y.id for y in ctx.author.roles]).intersection([542297369698369546, 611661848961351691, 542298007765516298,600837848169578516,652732584299593759])) > 0:
             return True
         else:
             await ctx.send("I'm sorry, you don't have permissions for that.", delete_after=5)
