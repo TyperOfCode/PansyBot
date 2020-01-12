@@ -17,9 +17,9 @@ class Events(commands.Cog):
             ids = dbfunctions.dbselectmore("data.db", "SELECT ID FROM shiftReminders", ())
             members = []
             for id in ids:
-                print(f"member = ctx.guild.get_member({id})")
+                #print(f"member = ctx.guild.get_member({id})")
                 member = before.guild.get_member(id)
-                print(f"members.append({member})")
+                #print(f"members.append({member})")
                 members.append(member)
             for member in members:
                 if 652732584299593759 in [y.id for y in member.roles]:
@@ -59,7 +59,7 @@ class Events(commands.Cog):
         if ':' not in randemg:
             randemg = '<a:yayhyper:658788790432956427>'
 
-        if not (guild.members % 2) == 0:
+        if not (len(guild.members) % 2) == 0:
             channel = get(guild.text_channels,id=542291426051096606)
             embed = discord.Embed(title=f'Welcome to My Anime Land, {member.mention}.',color=0xff00e1,description=f'Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
             await channel.send(embed=embed)
@@ -130,7 +130,7 @@ class Events(commands.Cog):
             if "developer" in [y.name.lower() for y in message.author.roles] or message.author.id == 144051124272365569:
                 newprefix = message.content[30:]
                 dbfunctions.dbupdate("data.db", "UPDATE information SET prefix=?", (newprefix,))
-                print("Updated prefix")
+                #print("Updated prefix")
                 await message.channel.send(f"My prefix has been updated to: `{newprefix}`")
         if message.channel.id == 542291426051096606 or message.channel.id == 622449628083912705:
             if "bye" in message.content.lower() or "bai" in message.content.lower():
