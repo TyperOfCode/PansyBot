@@ -5,6 +5,7 @@ import secrets
 import string
 from datetime import datetime
 from discord.utils import get
+from random import randint
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -52,6 +53,16 @@ class Events(commands.Cog):
         people = format(len(guild.members), ",")
         watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
         await self.bot.change_presence(activity=watch)
+
+        emojilist = '<a:yayhyper:658788790432956427> <:malyuSip:649269848047747092> <a:malYesss:613541344182272020> <a:malYayHyper:608280367744548880> <a:malYay:608280367580971017> <a:malWoop:610632031600115778> <:malwow:614525816360927233> <a:malWoahh:609048816963944448> <:malWoah:607837460470300683> <:malWoa:642018486654074922> <:malWinku:607838396349677568> <:malWinku:642018488344510464> <:malWelcome:665073482576691220> <a:malWH:629149080198578186> <a:malWaveDesu:610430770565087242> <a:malWave:658382330829996032> <:maluwuHeart:593137542904283145> <:MalUwU:658389108967604296> <a:maluwu:610632031696584724> <a:malThumbsUp:608280367312404481> <:malthonkblush:658035176424603678> <a:MalStars:612406936435949569> <a:malStar1:614619624268365829> <:malSparklyHeart:653605730452111361> <a:malSoHappy:618125323048976434> <a:malSnuggles:608278538554179584> <:malRaphiThumbsup:597527997838393353> <a:malpotatoeshuggle:608280365987135501> <a:malPikaDance:608688666528841728> <:malPeek:608687928087937024> <:malPatu:607838010125320192> <a:malPatu:608278537623044097> <a:malNya:608280365718831124> <a:malnya:608688667078295557> <a:malNods:608278535705985044> <a:malNekoPeek:608280368961028096> <a:malNekoDance:608280366066958346> <:malmegucomfy:599753428054573059> <:malmitsurilaugh:639656343577559040> <a:malJoins:609864729015353344> <a:malLoves:608278539128537088> <:malLoveDesu:613538787024437249> <a:malMaruFly:610632033710112788> <:malKokoroYay:640425181638164534> <a:malKittyYayR:640479986695929866> <a:malKittyYayL:640479984573743115>'.split(' ')
+        randemg = emojilist[randint(0,len(emojilist)-1)]
+        if ':' not in randemg:
+            randemg = '<a:yayhyper:658788790432956427>'
+
+        if not (guild.members % 2) == 0:
+            channel = get(guild.text_channels,id=542291426051096606)
+            embed = discord.Embed(title=f'Welcome to My Anime Land, {member.mention}.',color=0xff00e1,description=f'Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
+            await channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
