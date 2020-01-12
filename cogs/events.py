@@ -58,11 +58,11 @@ class Events(commands.Cog):
         randemg = emojilist[randint(0,len(emojilist)-1)]
         if ':' not in randemg:
             randemg = '<a:yayhyper:658788790432956427>'
-
+        print(f'Welcome = {not (len(guild.members) % 2) == 0}')
         if not (len(guild.members) % 2) == 0:
             channel = get(guild.text_channels,id=542291426051096606)
-            embed = discord.Embed(title=f'Welcome to My Anime Land, {member.mention}.',color=0xff00e1,description=f'Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
-            await channel.send(embed=embed)
+            #embed = discord.Embed(title=f'Welcome to My Anime Land, {member.mention}.',color=0xff00e1,description=f'Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
+            await channel.send(f'**Welcome to My Anime Land {member.mention}!**\n> Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -70,6 +70,9 @@ class Events(commands.Cog):
         people = format(len(guild.members), ",")
         watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
         await self.bot.change_presence(activity=watch)
+
+
+    
 
     @commands.Cog.listener()
     async def on_message(self, message):
