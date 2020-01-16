@@ -16,7 +16,7 @@ class Applications(commands.Cog):
         incorrectEmbed = discord.Embed(title="No problem!", colour=0xff0000, description="Thank you for your interest.")
         #-------------------
         timeoutEmbed = discord.Embed(title="Sorry!", colour=0xffff00, description="Request timed out.")
-        timeoutEmbed.set_footer(text="60 Seconds had passed.")
+        timeoutEmbed.set_footer(text="20 Minutes had passed.")
         #-------------------
         nextQuestion = discord.Embed(title="Thank you.", color=0x00ff00, description="Next question.")
         #-------------------

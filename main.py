@@ -11,8 +11,7 @@ import os
 def get_prefix(bot, message):
     return dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ())
 
-bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690])
-bot.remove_command("help")
+bot = commands.Bot(command_prefix=get_prefix, owner_ids=[144051124272365569, 636808158521589770, 231463189487943690], description="Prodominently moderation focused bot. Used for automation and statistics.")
 
 withincogs = os.listdir("/root/Pansy/cogs")
 startup_extensions = []
@@ -33,6 +32,7 @@ for extension in startup_extensions:
 async def on_ready():
     print("Username: {0.name}#{0.discriminator}\nID: {0.id}".format(bot.user))
     print(f"Using discord.py v{discord.__version__}")
+    print(f"Startup Extensions: {startup_extensions}")
     guild = bot.get_guild(540784184470274069)
     people = format(len(guild.members), ",")
     watch = discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people")
