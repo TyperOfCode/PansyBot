@@ -17,10 +17,10 @@ class AnimeFavoritesForm(commands.Cog):
         self.completed_form_role_id = 662039067789099008
 
         # favorites channel id
-        self.favorites_channel_id = 504040460524716037#662046896147136542
+        self.favorites_channel_id = 662046896147136542
 
         # general bot channel id
-        self.form_entry_channel_id = 504040460524716037#622906588562456576
+        self.form_entry_channel_id = 622906588562456576
         self.form_entry_channel = None
 
         # hold people that are taking the survey -.-
@@ -64,15 +64,15 @@ class AnimeFavoritesForm(commands.Cog):
         self.taking_survey.add(message.author.id)
 
         # check if the user already has the role
-        #completed_form_role = discord.utils.get(message.guild.roles, id=self.completed_form_role_id)
+        completed_form_role = discord.utils.get(message.guild.roles, id=self.completed_form_role_id)
         
-        #if completed_form_role is None:
-        #    print('[AnimeFavoritesForm] The form completed role does not exist. Unloading this cog.')
-        #    self.bot.unload_extension(self.qualified_name)
-        #    return
+        if completed_form_role is None:
+           print('[AnimeFavoritesForm] The form completed role does not exist. Unloading this cog.')
+           self.bot.unload_extension(self.qualified_name)
+           return
         
-        #if completed_form_role in message.author.roles:
-        #    return
+        if completed_form_role in message.author.roles:
+           return
 
         self.form_entry_author = message.author
 
@@ -105,7 +105,7 @@ class AnimeFavoritesForm(commands.Cog):
             await self.form_entry_channel.send('Alright, thank you.')
             return
             
-        display_message = await self.form_entry_channel.send('Let\'s start!')
+        await self.form_entry_channel.send('Let\'s start!')
         
         # this will hold all the user's responses
         responses = list()
