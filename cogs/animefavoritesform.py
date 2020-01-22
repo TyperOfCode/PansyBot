@@ -95,14 +95,14 @@ class AnimeFavoritesForm(commands.Cog):
 
         greeting_title = f'Hello, {message.author.name}! I\'ve seen that you sent a message at <#608076056208867328>, would you like to take our Animanga survey?'
         greeting_responses = { 
-            response_emoji['YES']: ( 'Yes', None ), 
-            response_emoji['NO']: ( 'No', None ), 
+            
         }
 
         greeting_response = await self.__send_reaction_form_query(message.author, greeting_title, greeting_responses)
 
-        if greeting_response != response_emoji['YES']:
+        if greeting_response == response_emoji['NO']:
             await self.form_entry_channel.send('Alright, thank you.')
+            self.taking_survey.discard(message.author.id)
             return
             
         await self.form_entry_channel.send('Let\'s start!')
@@ -134,6 +134,7 @@ class AnimeFavoritesForm(commands.Cog):
             if role_id is not None:
                 role_ids_to_add.append(role_id)
         else:
+            self.taking_survey.discard(message.author.id)
             return
 
         second_question_title = 'What do you prefer?'
@@ -151,11 +152,13 @@ class AnimeFavoritesForm(commands.Cog):
             if role_id is not None:
                 role_ids_to_add.append(role_id)
         else:
+            self.taking_survey.discard(message.author.id)
             return
 
         third_question_title = 'Favorite anime?'
         third_question_response = await self.__send_message_form_query(message.author, third_question_title, f'Question 3/{number_of_questions}')
         if third_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime', third_question_response))
@@ -163,6 +166,7 @@ class AnimeFavoritesForm(commands.Cog):
         fourth_question_title = 'Anime world you wish to live in?'
         fourth_question_response = await self.__send_message_form_query(message.author, fourth_question_title, f'Question 4/{number_of_questions}')
         if fourth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Anime World', fourth_question_response))
@@ -170,6 +174,7 @@ class AnimeFavoritesForm(commands.Cog):
         fifth_question_title = 'Favorite anime studio?'
         fifth_question_response = await self.__send_message_form_query(message.author, fifth_question_title, f'Question 5/{number_of_questions}')
         if fifth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Studio', fifth_question_response))
@@ -177,6 +182,7 @@ class AnimeFavoritesForm(commands.Cog):
         sixth_question_title = 'Write the title of an anime that you think is overrated.'
         sixth_question_response = await self.__send_message_form_query(message.author, sixth_question_title, f'Question 6/{number_of_questions}')
         if sixth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Overrated Anime', sixth_question_response))
@@ -184,6 +190,7 @@ class AnimeFavoritesForm(commands.Cog):
         seventh_question_title = 'Write the title of an anime that you think is underrated.'
         seventh_question_response = await self.__send_message_form_query(message.author, seventh_question_title, f'Question 7/{number_of_questions}')
         if seventh_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Underrated Anime', seventh_question_response))
@@ -191,6 +198,7 @@ class AnimeFavoritesForm(commands.Cog):
         eigth_question_title = 'Which Anime Opening is your favorite to listen to?'
         eigth_question_response = await self.__send_message_form_query(message.author, eigth_question_title, f'Question 8/{number_of_questions}')
         if eigth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Opening', eigth_question_response))
@@ -198,6 +206,7 @@ class AnimeFavoritesForm(commands.Cog):
         ninth_question_title = 'Which Anime Ending is your favorite to listen to?'
         ninth_question_response = await self.__send_message_form_query(message.author, ninth_question_title, f'Question 9/{number_of_questions}')
         if ninth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Ending', ninth_question_response))
@@ -221,11 +230,13 @@ class AnimeFavoritesForm(commands.Cog):
             if role_id is not None:
                 role_ids_to_add.append(role_id)
         else:
+            self.taking_survey.discard(message.author.id)
             return
 
         eleventh_question_title = 'Favorite manga?'
         eleventh_question_response = await self.__send_message_form_query(message.author, eleventh_question_title, f'Question 11/{number_of_questions}')
         if eleventh_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Manga', eleventh_question_response))
@@ -233,6 +244,7 @@ class AnimeFavoritesForm(commands.Cog):
         twelth_question_title = 'Weirdest manga you read?'
         twelth_question_response = await self.__send_message_form_query(message.author, twelth_question_title, f'Question 12/{number_of_questions}')
         if twelth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Weirdest Manga', twelth_question_response))
@@ -240,6 +252,7 @@ class AnimeFavoritesForm(commands.Cog):
         thirteenth_question_title = 'Write the title of a manga that you think is overrated.'
         thirteenth_question_response = await self.__send_message_form_query(message.author, thirteenth_question_title, f'Question 13/{number_of_questions}')
         if thirteenth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Overrated Manga', thirteenth_question_response))
@@ -247,6 +260,7 @@ class AnimeFavoritesForm(commands.Cog):
         fourteenth_question_title = 'Underrated manga?'
         fourteenth_question_response = await self.__send_message_form_query(message.author, fourteenth_question_title, f'Question 14/{number_of_questions}')
         if fourteenth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Underrated Manga', fourteenth_question_response))
@@ -270,11 +284,13 @@ class AnimeFavoritesForm(commands.Cog):
             if role_id is not None:
                 role_ids_to_add.append(role_id)
         else:
+            self.taking_survey.discard(message.author.id)
             return
 
         sixteenth_question_title = 'Favorite Light Novel?'
         sixteenth_question_response = await self.__send_message_form_query(message.author, sixteenth_question_title, f'Question 16/{number_of_questions}')
         if sixteenth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Light Novel', sixteenth_question_response))
@@ -302,11 +318,13 @@ class AnimeFavoritesForm(commands.Cog):
             if role_id is not None:
                 role_ids_to_add.append(role_id)
         else:
+            self.taking_survey.discard(message.author.id)
             responses.append(('Favorite Genre', None))
 
         eighteenth_question_title = 'Favorite Anime Movie?'
         eighteenth_question_response = await self.__send_message_form_query(message.author, eighteenth_question_title, f'Question 18/{number_of_questions}')
         if eighteenth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Movie', eighteenth_question_response))
@@ -314,6 +332,7 @@ class AnimeFavoritesForm(commands.Cog):
         nineteenth_question_title = 'Favorite Anime Episode?'
         nineteenth_question_response = await self.__send_message_form_query(message.author, nineteenth_question_title, f'Question 19/{number_of_questions}')
         if nineteenth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Episode', nineteenth_question_response))
@@ -322,6 +341,7 @@ class AnimeFavoritesForm(commands.Cog):
         twentieth_question_description = 'For example: Summer 2017, Winter 2019, etc.'
         twentieth_question_response = await self.__send_message_form_query(message.author, twentieth_question_title, twentieth_question_description, f'Question 20/{number_of_questions}')
         if twentieth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Season', twentieth_question_response))
@@ -330,6 +350,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_first_question_description = 'For example: Volume 10 of Slam Dunk, Volume 5 of Kimetsu no Yaiba, etc.'
         twenty_first_question_response = await self.__send_message_form_query(message.author, twenty_first_question_title, twenty_first_question_description, f'Question 21/{number_of_questions}')
         if twenty_first_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Manga Volume', twenty_first_question_response))
@@ -337,6 +358,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_second_question_title = 'Favorite Male Protagonist?'
         twenty_second_question_response = await self.__send_message_form_query(message.author, twenty_second_question_title, f'Question 22/{number_of_questions}')
         if twenty_second_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Male Protagonist', twenty_second_question_response))
@@ -344,6 +366,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_third_question_title = 'Favorite Female Protagonist?'
         twenty_third_question_response = await self.__send_message_form_query(message.author, twenty_third_question_title, f'Question 23/{number_of_questions}')
         if twenty_third_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Female Protagonist', twenty_third_question_response))
@@ -351,6 +374,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_fourth_question_title = 'Favorite Antagonist?'
         twenty_fourth_question_response = await self.__send_message_form_query(message.author, twenty_fourth_question_title, f'Question 24/{number_of_questions}')
         if twenty_fourth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Antagonist', twenty_fourth_question_response))
@@ -358,6 +382,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_fifth_question_title = 'Favorite Male Support Character?'
         twenty_fifth_question_response = await self.__send_message_form_query(message.author, twenty_fifth_question_title, f'Question 25/{number_of_questions}')
         if twenty_fifth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Male Support Character', twenty_fifth_question_response))
@@ -365,6 +390,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_sixth_question_title = 'Favorite Female Support Character?'
         twenty_sixth_question_response = await self.__send_message_form_query(message.author, twenty_sixth_question_title, f'Question 26/{number_of_questions}')
         if twenty_sixth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Female Support Character', twenty_sixth_question_response))
@@ -372,6 +398,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_seventh_question_title = 'Favorite Anime Couple?'
         twenty_seventh_question_response = await self.__send_message_form_query(message.author, twenty_seventh_question_title, f'Question 27/{number_of_questions}')
         if twenty_seventh_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Couple', twenty_seventh_question_response))
@@ -379,6 +406,7 @@ class AnimeFavoritesForm(commands.Cog):
         twenty_eigth_question_title = 'Favorite Anime Pet?'
         twenty_eigth_question_response = await self.__send_message_form_query(message.author, twenty_eigth_question_title, f'Question 28/{number_of_questions}')
         if twenty_eigth_question_response is None:
+            self.taking_survey.discard(message.author.id)
             return
 
         responses.append(('Favorite Anime Pet', twenty_eigth_question_response))
