@@ -49,7 +49,7 @@ class RateMyAvatar(commands.Cog):
         """
 
         self.bot: commands.Bot = bot
-        self.rating_channel_id = 638923357949263885
+        self.rating_channel_id = 654268988896968709
         self.rating_message_id: Union[int, None] = None
         self.rated_user_id: Union[int, None] = None
         self.rating_cooldown = dict()
@@ -88,18 +88,29 @@ class RateMyAvatar(commands.Cog):
         """
 
         await self.bot.wait_until_ready()
+
+        one_emoji = self.bot.get_emoji(658785745804328980) or '1️⃣'
+        two_emoji = self.bot.get_emoji(658785722265894932) or '2️⃣'
+        three_emoji = self.bot.get_emoji(658785706201579570) or '3️⃣'
+        four_emoji = self.bot.get_emoji(658785651881410573) or '4️⃣'
+        five_emoji = self.bot.get_emoji(658785634479243315) or '5️⃣'
+        six_emoji = self.bot.get_emoji(658785616120643604) or '6️⃣'
+        seven_emoji = self.bot.get_emoji(658785597804249117) or '7️⃣'
+        eight_emoji = self.bot.get_emoji(658785573598920741) or '8️⃣'
+        nine_emoji = self.bot.get_emoji(658785549540392960) or '9️⃣'
+        ten_emoji = self.bot.get_emoji(608278534456344577) or '🔟'
         
         self.numeric_reaction_to_rating = {
-            self.bot.get_emoji(662039059379519499) or '1️⃣': 1, 
-            self.bot.get_emoji(662038700607143985) or '2️⃣': 2, 
-            self.bot.get_emoji(662038701559513089) or '3️⃣': 3, 
-            self.bot.get_emoji(662038702955954207) or '4️⃣': 4, 
-            self.bot.get_emoji(662038703295692859) or '5️⃣': 5,
-            self.bot.get_emoji(662038703723642911) or '6️⃣': 6, 
-            self.bot.get_emoji(662039057248944139) or '7️⃣': 7, 
-            self.bot.get_emoji(662039058423349253) or '8️⃣': 8, 
-            self.bot.get_emoji(662039058809356309) or '9️⃣': 9,
-            self.bot.get_emoji(608278534456344577) or '🔟': 10,
+            one_emoji: 1, 
+            two_emoji: 2, 
+            three_emoji: 3, 
+            four_emoji: 4, 
+            five_emoji: 5,
+            six_emoji: 6, 
+            seven_emoji: 7, 
+            eight_emoji: 8, 
+            nine_emoji: 9,
+            ten_emoji: 10,
         }
 
         rating_channel = self.bot.get_channel(self.rating_channel_id)
@@ -121,7 +132,7 @@ class RateMyAvatar(commands.Cog):
             self.rated_user_id = owner_id = self.bot.owner_id
             rating_user = self.bot.get_user(owner_id)
 
-        self.cooldown_time[rating_user.id] = datetime.datetime.now()
+        self.rating_cooldown[rating_user.id] = datetime.datetime.now()
         await self.__send_avatar_to_rate(rating_user, rating_channel)
 
 
