@@ -55,19 +55,8 @@ class RateMyAvatar(commands.Cog):
         self.rating_cooldown = dict()
         self.cooldown_time = 24
         self.embed_color = discord.Color.blurple()
-
-        self.numeric_reaction_to_rating = { 
-            '1️⃣': 1, 
-            '2️⃣': 2, 
-            '3️⃣': 3, 
-            '4️⃣': 4, 
-            '5️⃣': 5, 
-            '6️⃣': 6, 
-            '7️⃣': 7, 
-            '8️⃣': 8, 
-            '9️⃣': 9, 
-            '🔟': 10 
-        }
+        
+        self.numeric_reaction_to_rating = dict()
 
         self.number_rating_to_emoji_reation = {
             1: 626479116643860480,
@@ -99,6 +88,19 @@ class RateMyAvatar(commands.Cog):
         """
 
         await self.bot.wait_until_ready()
+        
+        self.numeric_reaction_to_rating = {
+            self.bot.get_emoji(662039059379519499) or '1️⃣': 1, 
+            self.bot.get_emoji(662038700607143985) or '2️⃣': 2, 
+            self.bot.get_emoji(662038701559513089) or '3️⃣': 3, 
+            self.bot.get_emoji(662038702955954207) or '4️⃣': 4, 
+            self.bot.get_emoji(662038703295692859) or '5️⃣': 5,
+            self.bot.get_emoji(662038703723642911) or '6️⃣': 6, 
+            self.bot.get_emoji(662039057248944139) or '7️⃣': 7, 
+            self.bot.get_emoji(662039058423349253) or '8️⃣': 8, 
+            self.bot.get_emoji(662039058809356309) or '9️⃣': 9,
+            self.bot.get_emoji(608278534456344577) or '🔟': 10,
+        }
 
         rating_channel = self.bot.get_channel(self.rating_channel_id)
         if rating_channel is None:
@@ -119,6 +121,7 @@ class RateMyAvatar(commands.Cog):
             self.rated_user_id = owner_id = self.bot.owner_id
             rating_user = self.bot.get_user(owner_id)
 
+        self.cooldown_time[rating_user.id] = datetime.datetime.now()
         await self.__send_avatar_to_rate(rating_user, rating_channel)
 
 
@@ -169,7 +172,7 @@ class RateMyAvatar(commands.Cog):
                 self.rating_cooldown.pop(reaction_user.id)
 
         # if the user adds a foreign emoji or it's the user meant to be reacted to, remove reaction
-        if not str(reaction) in self.numeric_reaction_to_rating or reaction_user.id == self.rated_user_id: 
+        if not reaction.emoji in self.numeric_reaction_to_rating or reaction_user.id == self.rated_user_id: 
             await reaction.remove(reaction_user)
             return
 
@@ -179,7 +182,7 @@ class RateMyAvatar(commands.Cog):
             await rating_channel.send(f'It seems that the user that you rated has left, {reaction_user.mention}! Let\'s rate your avatar instead!')
 
         else:
-            avatar_rating_value = self.numeric_reaction_to_rating[str(reaction)]
+            avatar_rating_value = self.numeric_reaction_to_rating[reaction.emoji]
             avatar_rating_emoji_id = self.number_rating_to_emoji_reation[avatar_rating_value]
             avatar_rating_emoji = str(self.bot.get_emoji(avatar_rating_emoji_id))
 
