@@ -13,7 +13,7 @@ class cotd(commands.Cog):
         self.bot = bot
         self.FILEPATH = os.path.abspath(__file__)
         self.FILEDIR = self.FILEPATH.replace(os.path.basename(self.FILEPATH),'')
-        self.SAVELOC = self.FILEDIR[:-5] + "storageTXT/"
+        self.SAVELOC = self.FILEDIR[:-5] + "./data/cotd/"
 
         self.serverid = 540784184470274069
         self.pingroleid = 661212314908884992
@@ -65,7 +65,7 @@ class cotd(commands.Cog):
                 `{p}channel choosenow` - Chooses a cotd channel immediately
                 """.replace('            ','').format(p='p^')
 
-                await ctx.send(embed=self.miscembed('Channel Help Page',page,ctx.guild)) 
+                await ctx.send(embed=self.miscembed('Channel Help Page',page,ctx.guild))
 
 
     @_channel.command(name='add')
@@ -74,10 +74,10 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
-            
+            if self.adminperms(ctx):
+
                 if self.servercheck(ctx.guild.id):
-                    
+
                         if channelm == None:
                             await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to add to the list',ctx.guild))
                             return
@@ -88,8 +88,8 @@ class cotd(commands.Cog):
                             multiple = True
 
                         multilist = []
-                       
-                        
+
+
                         for i in ctx.message.channel_mentions:
                             ### alrighty here we go
 
@@ -97,10 +97,10 @@ class cotd(commands.Cog):
                             if str(i.id) in [i.split('|')[0] for i in channellist]:
                                 await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{i.mention} is already in the list, skipping..',ctx.guild))
                                 continue
-                            
+
                             if not multiple:
                                 await ctx.send(embed=self.acceptembed('Success!',f'Channel {i.mention} has been added to the list',ctx.guild))
-                            
+
                             write = open(self.SAVELOC + 'cotd.txt','a')
                             write.write(f"\n{i.id}|0")
                             write.close()
@@ -111,7 +111,7 @@ class cotd(commands.Cog):
                             channelmentions = ''
                             for i in multilist:
                                 channelmentions += f'{i.mention}, '
-                            
+
                             await ctx.send(embed=self.acceptembed('Success!',f'Channels {channelmentions} have been added to the list',ctx.guild))
 
                         return
@@ -119,7 +119,7 @@ class cotd(commands.Cog):
                     await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                return
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
 
@@ -129,14 +129,14 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
-            
+            if self.adminperms(ctx):
+
                 if self.servercheck(ctx.guild.id):
-                    
+
                         if channelm == None:
                             await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to remove from the list',ctx.guild))
                             return
-                        
+
 
 
                         channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
@@ -163,7 +163,7 @@ class cotd(commands.Cog):
 
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                return
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
@@ -174,10 +174,10 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
-            
+            if self.adminperms(ctx):
+
                 if self.servercheck(ctx.guild.id):
-                    
+
                         write = open(self.SAVELOC + 'cotd.txt','w')
                         write.write('')
                         write.close()
@@ -190,7 +190,7 @@ class cotd(commands.Cog):
 
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                return
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
@@ -202,10 +202,10 @@ class cotd(commands.Cog):
         if not self.dmcheck(ctx.message):
 
 
-            
+
             if self.servercheck(ctx.guild.id):
-                
-                    
+
+
                     channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
 
                     chanstr = ''
@@ -226,7 +226,7 @@ class cotd(commands.Cog):
             else:
                 await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
 
-            
+
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
@@ -237,14 +237,14 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
-            
+            if self.adminperms(ctx):
+
                 if self.servercheck(ctx.guild.id):
-                        
+
 
                         channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
 
-                        
+
                         msg = await ctx.send(embed=self.miscembed('Resetting list','Resetting the list....',ctx.guild))
 
 
@@ -262,9 +262,9 @@ class cotd(commands.Cog):
                         write.close()
 
 
-                        
 
-                        
+
+
 
                         save = open(self.SAVELOC + 'cotdSave.txt','r').read().split('\n')
 
@@ -291,7 +291,7 @@ class cotd(commands.Cog):
 
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                return
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
@@ -302,8 +302,8 @@ class cotd(commands.Cog):
 
         if not self.dmcheck(ctx.message):
 
-            if self.adminperms(ctx):  
-            
+            if self.adminperms(ctx):
+
                 if self.servercheck(ctx.guild.id):
                         chooselist = []
 
@@ -324,13 +324,13 @@ class cotd(commands.Cog):
                                     await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                                 except:
                                     pass
-                                
+
                             except:
                                 pass
 
                             channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
-                            
-                            
+
+
                             st = ''
                             for i in channellist:
                                 if i != '':
@@ -340,9 +340,9 @@ class cotd(commands.Cog):
                             write.write(st)
                             write.close()
 
-                           
 
-        
+
+
                             reset = open(self.SAVELOC + 'cotdSave.txt','w')
                             reset.close()
 
@@ -356,10 +356,10 @@ class cotd(commands.Cog):
 
                             save = open(self.SAVELOC + 'cotdSave.txt','r').read().split('\n')
 
-                            
 
-                            
-                        
+
+
+
                         channel = await self.bot.fetch_channel(int(choice(chooselist)))
 
                         st = ''
@@ -372,7 +372,7 @@ class cotd(commands.Cog):
                         write.write(st)
                         write.close()
 
-                        
+
 
                         if len(save) == 4:
                             try:
@@ -384,7 +384,7 @@ class cotd(commands.Cog):
                                 await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                             except:
                                 pass
-                            
+
                         new = open(self.SAVELOC + 'cotdSave.txt','w')
                         new.write(f'{channel.id}\n{channel.name}\n{channel.category_id}\n{channel.position}')
                         new.close()
@@ -398,7 +398,7 @@ class cotd(commands.Cog):
                             await ctx.send(embed=self.acceptembed('Success!',f'Chose {channel.name}',ctx.guild))
                             await channel.edit(name=newname,category=None)
 
-                            
+
                             pingrole = get(get(self.bot.guilds,id=self.serverid).roles,id=self.pingroleid)
                             await pingrole.edit(mentionable=True)
                             await channel.send(f'{pingrole.mention}',delete_after=2)
@@ -412,11 +412,11 @@ class cotd(commands.Cog):
 
             else:
                 await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
-                return 
+                return
 
         else:
             await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
-    
+
     @tasks.loop(seconds=1)
     async def cotdchoose(self):
 
@@ -442,13 +442,13 @@ class cotd(commands.Cog):
                         await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                     except:
                         pass
-                    
+
                 except:
                     pass
 
                 channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
-                
-                
+
+
                 st = ''
                 for i in channellist:
                     if i != '':
@@ -458,7 +458,7 @@ class cotd(commands.Cog):
                 write.write(st)
                 write.close()
 
-                
+
 
 
                 reset = open(self.SAVELOC + 'cotdSave.txt','w')
@@ -474,8 +474,8 @@ class cotd(commands.Cog):
 
                 save = open(self.SAVELOC + 'cotdSave.txt','r').read().split('\n')
 
-                
-            
+
+
             channel = await self.bot.fetch_channel(int(choice(chooselist)))
 
             st = ''
@@ -488,7 +488,7 @@ class cotd(commands.Cog):
             write.write(st)
             write.close()
 
-            
+
 
             if len(save) == 4:
                 try:
@@ -500,7 +500,7 @@ class cotd(commands.Cog):
                     await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                 except:
                     pass
-                
+
             new = open(self.SAVELOC + 'cotdSave.txt','w')
             new.write(f'{channel.id}\n{channel.name}\n{channel.category_id}\n{channel.position}')
             new.close()
@@ -511,10 +511,10 @@ class cotd(commands.Cog):
                     newname += i
 
             try:
-                
+
                 await channel.edit(name=newname,category=None)
 
-                
+
                 pingrole = get(get(self.bot.guilds,id=self.serverid).roles,id=self.pingroleid)
                 await pingrole.edit(mentionable=True)
                 await channel.send(f'{pingrole.mention}',delete_after=2)
@@ -522,8 +522,8 @@ class cotd(commands.Cog):
             except:
                 return
 
-            
 
-    
+
+
 def setup(bot):
     bot.add_cog(cotd(bot))

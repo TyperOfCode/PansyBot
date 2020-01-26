@@ -1,180 +1,145 @@
+import os
+import time
+import psutil
 import discord
 import asyncio
 import datetime
-import secrets
-from datetime import datetime
-from discord.ext import commands
-from discord.utils import get
-import sqlite3
-import dbfunctions
 
-import os
-import psutil
+from discord.ext import commands
+from utils.essentials import functions
+from utils.essentials.checks import check
+from utils.essentials.functions import func
+
+config = functions.get("utils/config.json")
+start_time = time.time()
 
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def helperPlus(ctx):
-        allowed = [652732584299593759, 600837848169578516, 542297369698369546, 611661848961351691, 542298007765516298]
-        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
-            return True
-        return False
+    @commands.group(invoke_without_command=True)
+    @commands.check(check.is_owner)
+    async def cog(self, ctx):
+        await ctx.send(embed=func.eErr("Choose one", "**cog load** - Load a cog.\n**cog unload** - Unload a cog.\n**cog reload** - Reload a cog\n**cog list** - Lists all cogs.", "Cogs"), delete_after=config.deltimer)
 
-    def modPlus(ctx):
-        allowed = [542297369698369546, 611661848961351691, 542298007765516298]
-        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
-            return True
-        return False
+    @cog.group(invoke_without_command=True)
+    @commands.check(check.is_owner)
+    async def load(self, ctx, cog : str=None):
+        if cog:
+            try:
+                self.bot.load_extension(f"cogs.{cog}")
+                await ctx.send(embed=func.Editable("Done", f"{cog} was successfully loaded.", "Cogs"), delete_after=config.deltimer)
+            except Exception as error:
+                await ctx.send(embed=func.Editable_E(f"An unexpected error occurred", f"{cog} failed to load", "Error"), delete_after=config.deltimer)
+                func.log(error)
+        else:
+            await ctx.send(embed=func.Editable_E("You missed something", "Please name a cog to load", "Error"), delete_after=config.deltimer)
 
-    def adminPlus(ctx):
-        allowed = [611661848961351691, 542297369698369546]
-        if len(set(allowed).intersection(set([y.id for y in ctx.author.roles]))) > 0:
-            return True
-        return False
+    @cog.group(invoke_without_command=True)
+    @commands.check(check.is_owner)
+    async def unload(self, ctx, cog : str=None):
+        if cog:
+            if cog != "admin":
+                try:
+                    self.bot.unload_extension(f"cogs.{cog}")
+                    await ctx.send(embed=func.Editable("Done", f"{cog} was successfully unloaded.", "Cogs"), delete_after=config.deltimer)
+                except Exception as error:
+                    await ctx.send(embed=func.Editable_E(f"An unexpected error occurred", f"{cog} failed to unload", "Error"), delete_after=config.deltimer)
+                    func.log(error)
+            else:
+                await ctx.send(embed=func.Editable_E(f"Access Denied", "That is a required cog. Try another", "Cogs"), delete_after=config.deltimer)
+        else:
+            await ctx.send(embed=func.Editable_E("You missed something", "Please name a cog to unload", "Error"), delete_after=config.deltimer)
 
-    @commands.command(name="gay")
-    async def _gay(self, ctx):
-        if ctx.author.id == 319395686699499520:
-            await ctx.send("No u")
+    @cog.group(invoke_without_command=True)
+    @commands.check(check.is_owner)
+    async def reload(self, ctx, cog : str=None):
+        if cog:
+            try:
+                self.bot.unload_extension(f"cogs.{cog}")
+                self.bot.load_extension(f"cogs.{cog}")
+                await ctx.send(embed=func.Editable("Done", f"{cog} was successfully reloaded.", "Cogs"), delete_after=config.deltimer)
+            except Exception as error:
+                await ctx.send(embed=func.Editable_E(f"An unexpected error occurred", f"{cog} failed to unload.", "Error"), delete_after=config.deltimer)
+                func.log(error)
+        else:
+            await ctx.send(embed=func.Editable_E("You missed something", "Please name a cog to reload.", "Error"), delete_after=config.deltimer)
 
-    @commands.command(name="embed")
-    async def _embed(self, ctx, channel: discord.TextChannel = None):
-        msg = await ctx.channel.fetch_message(663562205534617601)
-        embed = discord.Embed(title="**__Donations__**", color=0x00ff00, description="<a:MalStars:612406936435949569>We appreciate your kindness to support us!\n<a:MalStars:612406936435949569>We promise to use your donations for the improvements of the server.\n\n<a:malStar1:614619624268365829> All donors can have:\n<a:MalGift:637197769534078987> **Color roles.**\n<a:MalGift:637197769534078987> **Nickname Change.**\n<a:MalGift:637197769534078987> **VIPs have access to VIP channels.**\n\n<a:malHeartW:608278535613841408> We can't offer you what equals the amount of love and support you provide us, but we would love to hear out your wishes and any perks you'd like to have for donating! <a:malHeartW:608278535613841408>\n\n\n**[Click here to donate!](https://donatebot.io/checkout/540784184470274069)**")
-        await msg.edit(embed=embed)
+    @cog.group(invoke_without_command=True)
+    @commands.check(check.is_owner)
+    async def list(self, ctx):
+        cogs = []
+        for file in os.listdir("cogs"):
+            if file.endswith(".py"):
+                name = file[:-3]
+                cogs.append(name)
+        await ctx.send(embed=func.Editable("All Cogs", ", ".join(cogs), "Cogs"), delete_after=config.deltimer)
 
-    @commands.command(name="db")
-    @commands.is_owner()
-    async def _db(self, ctx):
-        ids = dbfunctions.dbselectmore("data.db", "SELECT ID FROM shiftReminders", ())
-        members = []
-        for id in ids:
-            print(f"member = ctx.guild.get_member({id})")
-            member = ctx.guild.get_member(id)
-            print(f"members.append({member})")
-            members.append(member)
-        for member in members:
-            if 652732584299593759 in [y.id for y in member.roles]:
-                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (5, member.id,))
-            elif 600837848169578516 in [y.id for y in member.roles]:
-                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (18, member.id,))
-            elif 542298007765516298 in [y.id for y in member.roles]:
-                dbfunctions.dbupdate("data.db", "UPDATE shiftReminders SET maxShifts=? WHERE ID=?", (12, member.id,))
-            print(member)
-        await ctx.send("Done", delete_after=3)
+    @commands.command()
+    @commands.check(check.is_owner)
+    async def restart(self, ctx):
+        await ctx.send("Restarting...")
+        os.system("cls")
+        os.system("py -3 ./bot.py")
+        await self.bot.logout()
 
-    @commands.command(name="clear")
-    @commands.is_owner()
-    async def _clear(self, ctx, number: int = None, member: discord.Member = None):
-        if number is None:
-            number = 10
-        if member is None:
-            check = None
-        elif member is not None:
-            def is_member(m):
-                return m.author == member
-            check = is_member
-        await ctx.channel.purge(limit=number, check=check)
+    @commands.command()
+    @commands.check(check.is_owner)
+    async def shutdown(self, ctx):
+        await ctx.send("Shutting down...")
+        await self.bot.logout()
 
-    @commands.command(name="apps")
-    async def _apps(self, ctx):
-        numApps = dbfunctions.dbselect("data.db", "SELECT count(*) FROM applied", ())
-        await ctx.send(f"We have received {format(numApps, ',')} applications")
-
-    @commands.command(name="test")
-    @commands.is_owner()
-    async def _test(self, ctx):
-        await ctx.send(dbfunctions.dbselect("data.db", "SELECT prefix FROM information", ()))
-
-    @commands.command(name="ram")
-    @commands.is_owner()
-    async def _ram(self, ctx):
+    @commands.command()
+    @commands.check(check.is_admin)
+    async def ram(self, ctx):
         process = psutil.Process(os.getpid())
         ramBytes = process.memory_info().rss
         ramKilo = round(ramBytes/1024, 2)
         ramMega = round(ramKilo/1024, 2)
         ramGiga = round(ramMega/1024, 2)
-        embed = discord.Embed(title=f"RAM Usage | {self.bot.user.name}#{self.bot.user.discriminator}", color=0x00ffff, description=f"Bytes: {ramBytes}\nKilobytes: {ramKilo}\nMegabytes: {ramMega}\nGigabytes: {ramGiga}")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=func.ENoFooter("RAM Usage", f"{ramMega}MB of RAM in use."))
 
-    @commands.command(name="server-info")
-    async def _sinfo(self, ctx):
-        bots = 0
-        humans = 0
-        online = 0
-        for member in ctx.guild.members:
-            if member.bot == True:
-                bots+=1
-            elif member.bot == False:
-                humans+=1
-            if member.status == "online":
-                online+=1
-        embed = discord.Embed()
-        embed.add_field(name="Owner", value=f"{ctx.guild.owner.name}#{ctx.guild.owner.discriminator}")
-        #embed.add_field(name="VIP Perks", value="???")
-        embed.add_field(name="Server Created", value=printTime(ctx.guild.created_at))
-        embed.add_field(name="Total Channels", value=f"{len(ctx.guild.channels)} total channels:\n{len(ctx.guild.categories)} categories\n{len(ctx.guild.text_channels)} text, {len(ctx.guild.voice_channels)} voice")
-        embed.add_field(name="Total Roles", value=len(ctx.guild.roles))
-        embed.add_field(name="Boost Level", value=ctx.guild.premium_tier)
-        embed.add_field(name="Members Boosting", value=ctx.guild.premium_subscription_count)
-        embed.add_field(name="Members", value=f"{format(len(ctx.guild.members), ',')} total,\n{online} online\n{bots} bots, {humans} humans")
-        embed.set_footer(text=f"Server Name: {ctx.guild.name} | Server ID: {ctx.guild.id}")
-        await ctx.send(embed=embed)
+    @commands.command()
+    @commands.check(check.is_admin)
+    async def pm(self, ctx, user : discord.User=None, *args):
+        message = ' '.join(args)
+        if message != "" and user:
+            try:
+                embed = discord.Embed(
+                    title = f"You've recieved a message from {ctx.author}",
+                    colour = 0x9bf442,
+                    )
+                embed.set_author(name=f"Message from {ctx.author}", icon_url=f"{ctx.author.avatar_url}")
+                embed.add_field(name="Message:", value=message, inline=True)
+                embed.set_footer(text=f"UserID: {ctx.author.id}")
+                await user.send(embed=embed)
+            except Exception as error:
+                await ctx.send(embed=func.Editable_E("An unexpected error occurred", "Message failed to send.", "Error"), delete_after=config.deltimer)
+        else:
+            await ctx.send(embed=func.Editable_E("You forgot something", "Please @someone and message to DM", "Error"), delete_after=config.deltimer)
 
-    @commands.command(name="members")
-    async def _members(self, ctx):
-        malstaff = self.bot.get_guild(601673823921635336)
-        malserver = self.bot.get_guild(540784184470274069)
-        staffmembers = format(len(malstaff.members), ',')
-        malmembers = format(len(malserver.members), ',')
-        embed = discord.Embed(color=0x00ffff)
-        embed.add_field(name=malserver, value=malmembers)
-        embed.add_field(name=malstaff, value=staffmembers, inline=False)
-        embed.add_field(name="Total Members:", value=format(len(malstaff.members)+len(malserver.members), ","), inline=False)
-        embed.set_footer(text=f"As of: {timestamp()} GMT")
-        embed.set_thumbnail(url=str(malserver.icon_url))
-        await ctx.send(embed=embed)
+    @commands.command(no_pm=True)
+    @commands.check(check.is_admin)
+    async def uptime(self, ctx):
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(datetime.timedelta(seconds=difference))
+        await ctx.send(embed=func.ENoFooter("Uptime", text))
 
-    @commands.command(name="dm")
-    @commands.check(modPlus)
-    async def _dm(self, ctx, member: discord.Member, *, msg: str):
-        await member.send(msg)
-        await ctx.message.add_reaction("\U00002705")
+    @commands.command(no_pm=True)
+    @commands.check(check.is_admin)
+    async def checkroles(self, ctx):
+        user = ctx.author
+        rolelist = [655070657612218370, 659133244205301781, 659133240237359135, 659133249284603956, 659133242204618775, 659146257360748574, 659133242930364445, 659133246000594967, 659133249662091275, 659146251941576740, 669241392459022401, 659146254382792718, 659146284606947366, 659146285236092948, 668858038714761237]
+        for roles in ctx.author.roles:
+            if roles.id in rolelist:
+                for roles.id in rolelist:
+                    print(f"Yes! Found a role in that list, id = {roles.id}")
+                    role = discord.utils.get(ctx.guild.roles, id=roles.id)
+                    await user.remove_roles(role)
+            else:
+                print(f"Nope - {roles.id}")
 
-    @commands.command(name="echo")
-    @commands.is_owner()
-    async def _echo(self, ctx, guild: int, channel: int, *, msg: str):
-        server = self.bot.get_guild(guild)
-        text = server.get_channel(channel)
-        await text.send(msg)
-
-    @commands.group(name="bot-edit")
-    async def _botedit(self, ctx):
-        """| Commands that are related to editing the bot user."""
-
-    @_botedit.command(name="avatar")
-    async def _avatar(self, ctx):
-        """| Changes the bot's avatar."""
-        msg = await ctx.send("Trying to change avatar...")
-        with open("C:\\Users\\BMan12321\\Desktop\\DISCORDBOTS\\Pansy-Chan\\cogs\\avatar.png", "rb") as image:
-          f = image.read()
-        await self.bot.user.edit(avatar=f)
-        await asyncio.sleep(1)
-        await msg.edit(content="Finished!", delete_after=3)
-
-    @_botedit.command(name="username")
-    async def _username(self, ctx, *, username: str):
-        """| Changes the bot's username."""
-        await self.bot.user.edit(username=username)
-
-def printTime(datetime):
-    return datetime.strftime("%B %d, %Y | %I:%M:%S%p")
-
-def timestamp():
-    now = datetime.now()
-    current_time = now.strftime("%B %d, %Y | %I:%M:%S%p")
-    return current_time
 
 def setup(bot):
     bot.add_cog(Admin(bot))
