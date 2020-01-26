@@ -1,0 +1,13 @@
+{
+  "token": "",
+  "owners": [],
+  "admins" : [],
+  "prefix": "p^",
+  "deltimer": 15,
+
+  "mysql_host": "",
+  "mysql_user": "",
+  "mysql_pass": "",
+  "mysql_db" : "",
+  "mysql_port" : ""
+}
