@@ -10,12 +10,12 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        ignored = (commands.CommandNotFound, commands.NoPrivateMessage, commands.DisabledCommand, discord.NotFound, discord.AttributeError, commands.CheckFailure)
+        ignored = (commands.CommandNotFound, commands.NoPrivateMessage, commands.DisabledCommand, discord.NotFound, commands.CheckFailure)
         error = getattr(error, "original", error)
 
         if isinstance(error, ignored):
             return
-            
+
         elif isinstance(error, commands.MissingPermissions):
             try:
                 return await ctx.send(embed=func.Editable_("Error!", "Uh oh.. I seem to be missing some permissions!", "Error"))
