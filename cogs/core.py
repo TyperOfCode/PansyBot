@@ -103,7 +103,7 @@ class Main(commands.Cog):
             randemg = '<a:yayhyper:658788790432956427>'
         #print(f'Welcome = {not (len(guild.members) % 2) == 0}')
         if not (len(guild.members) % 2) == 0:
-            channel = get(guild.text_channels,id=542291426051096606)
+            channel = discord.utils.get(guild.text_channels,id=542291426051096606)
             #embed = discord.Embed(title=f'Welcome to My Anime Land, {member.mention}.',color=0xff00e1,description=f'Read <#607634761586049075> and introduce yourself <#661259788759597076> {randemg}')
             await channel.send(f'**We are pleased to have you join us {member.mention}, Enjoy your stay! {randemg}**')
 
@@ -115,33 +115,14 @@ class Main(commands.Cog):
         await self.bot.change_presence(activity=watch)
 
     @commands.Cog.listener(name="on_message")
-    async def on_message_message_logger(self, message):
-        if message.guild is None:
-            guild = self.bot.get_guild(540784184470274069)
-            modmail = guild.get_channel(656491562682810386)
-            member = guild.get_member(message.author.id)
-            embed = discord.Embed(title=f"DM Received", color=0x00ffff, description=f"ID: {member.id} | {member.mention}")
-            embed.set_author(name=f"{member.name}#{member.discriminator}", icon_url=member.avatar_url)
-            embed.add_field(name="Account Created:", value=member.created_at)
-            embed.add_field(name="Joined MAL:", value=member.joined_at)
-            if message.content != "" and message.attachments != []:
-                embed.add_field(name="Message Content:", value=message.content, inline=False)
-                embed.add_field(name="Image Sent:", value="⠀")
-                embed.set_image(url=message.attachments[0].url)
-            elif message.content == "" and message.attachments != []:
-                embed.add_field(name="Image Sent:", value="⠀")
-                embed.set_image(url=message.attachments[0].url)
-            elif message.attachments == [] and message.content != "":
-                embed.add_field(name="Message Content:", value=message.content, inline=False)
-            msg = await modmail.send(embed=embed)
-            await msg.add_reaction("\U00002705")
-        else:
-            pass
+    async def on_message_pingcheck(self, message):
+        if 439327545557778433 in message.raw_mentions:
+            await message.add_reaction("<a:malwdym:605144102857867294>")
 
     @commands.Cog.listener(name="on_message")
     async def on_message_prefix(self, message):
         if message.content == "<@!669724238252474387> prefix":
-            await message.channel.send(f"My current prefix is set to: {ctx.prefix}")
+            await message.channel.send(f"My current prefix is set to: p^")
         if message.channel.id == 542291426051096606 or message.channel.id == 622449628083912705:
             if "bye" in message.content.lower() or "bai" in message.content.lower():
                 emote = discord.utils.get(message.guild.emojis, name="malWaveDesu")
@@ -205,6 +186,8 @@ class Main(commands.Cog):
         if isinstance(error, commands.MissingAnyRole):
             await access_log.send(embed=func.AccessLog(f"Supporter access **Denied** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
             return await ctx.send(embed=func.SupportErr(), delete_after=config.deltimer)
+        else:
+            raise error
 
     @commands.group(invoke_without_command=True, aliases=["colour"])
     @commands.has_any_role("ᴹᴬᴸ Donator💎", "ᴹᴬᴸ Nitro Booster 🌺", "ᴹᴬᴸ Giveaway Donator 🌻", "ᴹᴬᴸ Supporter 🌹")

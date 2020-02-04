@@ -36,22 +36,9 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, discord.HTTPException):
             return await ctx.send(embed=func.Editable_S("Error!", f"There was an error with your command! Here it is: {error}", "Error"))
 
-        error_logging_channel = self.bot.get_channel(670076495586132000)
-        await error_logging_channel.send(f"Command Error Logged\n\n{error}")
-
-        #raise error
-
-
-    @commands.Cog.listener()
-    async def on_error(event_method, *args, **kwargs):
-        error_logging_channel = self.bot.get_channel(670076495586132000)
-
-        discord_message = args[0]
-        if discord_message:
-            await error_logging_channel.send(f'Error caused by: {discord_message}\n' \
-                                        f'Error caused in channel: {discord_message.channel.name}')
-
-        await error_logging_channel.send(f'{traceback.format_exc()}')
+        file = open("./utils/logs/Error.log","a")
+        file.write("[{}]: Command Error Logged {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), error))
+        file.close()
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))

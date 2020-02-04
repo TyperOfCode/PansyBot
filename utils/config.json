@@ -1,13 +1,11 @@
 {
   "token": "",
-  "owners": [],
-  "admins" : [],
-  "prefix": "p^",
+  "prefix": "!",
   "deltimer": 15,
 
-  "mysql_host": "",
+  "mysql_host": "localhost",
   "mysql_user": "",
   "mysql_pass": "",
   "mysql_db" : "",
-  "mysql_port" : ""
+  "mysql_port" : "3306"
 }
