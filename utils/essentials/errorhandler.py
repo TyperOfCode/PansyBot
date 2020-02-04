@@ -10,12 +10,11 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        ignored = (commands.CommandNotFound, commands.NoPrivateMessage, commands.DisabledCommand, discord.NotFound, commands.CheckFailure)
+        ignored = (commands.CommandNotFound, commands.NoPrivateMessage, commands.DisabledCommand, discord.NotFound)
         error = getattr(error, "original", error)
 
         if isinstance(error, ignored):
             return
-
         elif isinstance(error, commands.MissingPermissions):
             try:
                 return await ctx.send(embed=func.Editable_("Error!", "Uh oh.. I seem to be missing some permissions!", "Error"))
@@ -24,6 +23,9 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             return await ctx.send(embed=func.Editable_("Error!", f"Woah woah {ctx.author.mention} calm down, that command is currently cooling down!", "Error"))
+
+        elif isinstance(error, commands.CheckFailure):
+            return
 
         elif isinstance(error, discord.Forbidden):
             try:

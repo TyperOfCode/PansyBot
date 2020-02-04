@@ -26,9 +26,8 @@ class check(commands.Cog):
             return False
 
     async def is_admin(ctx):
-        access_log = discord.utils.get(ctx.guild.text_channels, name="access-log")
         UID = str(ctx.author.id)
-        if sql.Entry_Check(UID, "id", "admins"):
+        if sql.Entry_Check(UID, "id", "admins") or sql.Entry_Check(UID, "id", "owners"):
             file = open("./utils/logs/access.log","a")
             file.write("[{}]: Admin Access Granted to {} | CMD - {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), ctx.author.id, ctx.message.content))
             file.close()
