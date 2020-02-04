@@ -205,6 +205,8 @@ class Main(commands.Cog):
         if isinstance(error, commands.MissingAnyRole):
             await access_log.send(embed=func.AccessLog(f"Supporter access **Denied** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
             return await ctx.send(embed=func.SupportErr(), delete_after=config.deltimer)
+        else:
+            raise error
 
     @commands.group(invoke_without_command=True, aliases=["colour"])
     @commands.has_any_role("ᴹᴬᴸ Donator💎", "ᴹᴬᴸ Nitro Booster 🌺", "ᴹᴬᴸ Giveaway Donator 🌻", "ᴹᴬᴸ Supporter 🌹")

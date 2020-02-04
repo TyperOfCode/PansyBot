@@ -2,6 +2,7 @@ import datetime
 import discord
 
 from discord.ext import commands
+from utils.essentials import sql
 from utils.essentials import functions
 from utils.essentials.functions import func
 
@@ -12,25 +13,30 @@ class check(commands.Cog):
         self.bot = bot
 
     async def is_owner(ctx):
-        access_log = discord.utils.get(ctx.guild.text_channels, name="access-log")
-        if ctx.author.id in config.owners:
-            await ctx.message.delete()
-            await access_log.send(embed=func.AccessLog(f"Owner access **Granted** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
+        UID = str(ctx.author.id)
+        if sql.Entry_Check(UID, "id", "owners"):
+            file = open("./utils/logs/Admin.log","a")
+            file.write("[{}]: Owner Access Granted to {} | CMD - {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), ctx.author.id, ctx.message.content))
+            file.close()
             return True
         else:
-            await access_log.send(embed=func.AccessLog(f"Owner access **Denied** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
-            await ctx.send(embed=func.NoPerm(), delete_after=config.deltimer)
+            file = open("./utils/logs/Admin.log","a")
+            file.write("[{}]: Owner Access Denied to {} | CMD - {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), ctx.author.id, ctx.message.content))
+            file.close()
             return False
 
     async def is_admin(ctx):
         access_log = discord.utils.get(ctx.guild.text_channels, name="access-log")
-        if ctx.author.id in config.owners or config.admins:
-            await ctx.message.delete()
-            await access_log.send(embed=func.AccessLog(f"Admin access **Granted** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
+        UID = str(ctx.author.id)
+        if sql.Entry_Check(UID, "id", "admins"):
+            file = open("./utils/logs/access.log","a")
+            file.write("[{}]: Admin Access Granted to {} | CMD - {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), ctx.author.id, ctx.message.content))
+            file.close()
             return True
         else:
-            await access_log.send(embed=func.AccessLog(f"Admin access **Denied** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
-            await ctx.send(embed=func.NoPerm(), delete_after=config.deltimer)
+            file = open("./utils/logs/Admin.log","a")
+            file.write("[{}]: Admin Access Denied to {} | CMD - {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), ctx.author.id, ctx.message.content))
+            file.close()
             return False
 
 

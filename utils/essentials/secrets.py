@@ -1,11 +1,5 @@
 import random
 
-ignore = [655481681741873152]
-
-afkBMan = False
-afkNanami = False
-
-token = "NjY4ODY1NzEwMTY4MDgwMzg3.XiXgKg.0dH5IM4N-dF60Q-8iHoJr8bEIzs"
 checkmark = "\U00002705"
 crossmark = "\U0000274C"
 waiting = "\U000023F3"

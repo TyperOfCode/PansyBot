@@ -87,6 +87,8 @@ class func(commands.Cog):
             )
         embed.set_footer(text=footer)
 
+        return embed
+
     def eErr(title, description, footer):
         embed = discord.Embed(
             title = title,

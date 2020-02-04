@@ -4,8 +4,10 @@ import psutil
 import discord
 import asyncio
 import datetime
+import mysql.connector
 
 from discord.ext import commands
+from utils.essentials import sql
 from utils.essentials import functions
 from utils.essentials.checks import check
 from utils.essentials.functions import func
@@ -118,7 +120,7 @@ class Admin(commands.Cog):
         else:
             await ctx.send(embed=func.Editable_E("You forgot something", "Please @someone and message to DM", "Error"), delete_after=config.deltimer)
 
-    @commands.command(no_pm=True)
+    @commands.command()
     @commands.check(check.is_admin)
     async def uptime(self, ctx):
         current_time = time.time()
@@ -126,7 +128,7 @@ class Admin(commands.Cog):
         text = str(datetime.timedelta(seconds=difference))
         await ctx.send(embed=func.ENoFooter("Uptime", text))
 
-    @commands.command(no_pm=True)
+    @commands.command()
     @commands.check(check.is_admin)
     async def checkroles(self, ctx):
         user = ctx.author
@@ -140,6 +142,88 @@ class Admin(commands.Cog):
             else:
                 print(f"Nope - {roles.id}")
 
+    @commands.group(invoke_without_command=True)
+    @commands.check(check.is_admin)
+    async def access(self, ctx):
+        await ctx.send(embed=func.Editable_E("Available Options", "Usage:\n\naccess add @user {access}\naccess remove @user {access}\n\n Access Types: admins & owners", "Access"))
+
+    @access.group(invoke_without_command=True)
+    @commands.check(check.is_admin)
+    async def add(self, ctx, user: discord.User=None, table:str=None):
+        if user and table:
+            if table == "admins" or table == "owners":
+                if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
+                    if not self.has_access(user):
+                        if self.set_access(user, table):
+                            await ctx.send(embed=func.Editable(f"Added {user.name} to {table}", "", "Access"))
+                        else:
+                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"))
+                    else:
+                        await ctx.send(embed=func.Editable_E("That user already has access rights", "", "Access"))
+                else:
+                    await ctx.send(embed=func.NoPerm())
+            else:
+                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"))
+        else:
+            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"))
+
+    @access.group(invoke_without_command=True)
+    @commands.check(check.is_admin)
+    async def remove(self, ctx, user: discord.User=None, table:str=None):
+        if user and table:
+            if table == "admins" or table == "owners":
+                if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
+                    if self.has_access(user):
+                        if self.remove_access(user, table):
+                            await ctx.send(embed=func.Editable(f"Removed {user.name} from {table}", "", "Access"))
+                        else:
+                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"))
+                    else:
+                        await ctx.send(embed=func.Editable_E("That user has no access rights", "", "Access"))
+                else:
+                    await ctx.send(embed=func.NoPerm())
+            else:
+                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"))
+        else:
+            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"))
+
+    def has_access(self, user):
+        if self.owner_check(user.id) or self.admin_check(user.id):
+            return True
+        else:
+            return False
+
+    def set_access(self, user, table):
+        UID = (user.id)
+        if not self.has_access(user):
+            mydb = sql.createConnection()
+            cur = mydb.cursor()
+            cur.execute(f"INSERT into `{config.mysql_db}`.`{table}` VALUES ('{user.name}', '{user.id}')")
+            mydb.commit()
+            return True
+        else:
+            return False
+
+    def remove_access(self, user, table):
+        UID = (user.id)
+        if self.has_access(user):
+            mydb = sql.createConnection()
+            cur = mydb.cursor()
+            cur.execute(f"DELETE FROM `{config.mysql_db}`.`{table}` WHERE id='{UID}';")
+            mydb.commit()
+            return True
+        else:
+            return False
+
+    def owner_check(self, UID):
+        UID = str(UID)
+        if sql.Entry_Check(UID, "id", "owners"):
+            return True
+
+    def admin_check(self, UID):
+        UID = str(UID)
+        if sql.Entry_Check(UID, "id", "admins"):
+            return True
 
 def setup(bot):
     bot.add_cog(Admin(bot))
