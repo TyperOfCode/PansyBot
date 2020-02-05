@@ -368,7 +368,7 @@ class Main(commands.Cog):
                                             self.add_id(user)
                                             await asyncio.sleep(60)
                                             await channel.delete()
-                                            app_log = guild.get_channel(657965850057506827)
+                                            applog = self.bot.get_channel(657965850057506827)
                                             await applog.send(embed=final)
             else:
                 await ctx.message.delete()
