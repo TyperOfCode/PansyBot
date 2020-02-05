@@ -128,24 +128,10 @@ class Admin(commands.Cog):
         text = str(datetime.timedelta(seconds=difference))
         await ctx.send(embed=func.ENoFooter("Uptime", text))
 
-    @commands.command()
-    @commands.check(check.is_admin)
-    async def checkroles(self, ctx):
-        user = ctx.author
-        rolelist = [655070657612218370, 659133244205301781, 659133240237359135, 659133249284603956, 659133242204618775, 659146257360748574, 659133242930364445, 659133246000594967, 659133249662091275, 659146251941576740, 669241392459022401, 659146254382792718, 659146284606947366, 659146285236092948, 668858038714761237]
-        for roles in ctx.author.roles:
-            if roles.id in rolelist:
-                for roles.id in rolelist:
-                    print(f"Yes! Found a role in that list, id = {roles.id}")
-                    role = discord.utils.get(ctx.guild.roles, id=roles.id)
-                    await user.remove_roles(role)
-            else:
-                print(f"Nope - {roles.id}")
-
     @commands.group(invoke_without_command=True)
     @commands.check(check.is_admin)
     async def access(self, ctx):
-        await ctx.send(embed=func.Editable_E("Available Options", "Usage:\n\naccess add @user {access}\naccess remove @user {access}\n\n Access Types: admins & owners", "Access"))
+        await ctx.send(embed=func.Editable_E("Available Options", "Usage:\n\naccess add @user {access}\naccess remove @user {access}\n\n Access Types: admins & owners", "Access"), delete_after=config.deltimer)
 
     @access.group(invoke_without_command=True)
     @commands.check(check.is_admin)
@@ -155,17 +141,17 @@ class Admin(commands.Cog):
                 if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
                     if not self.has_access(user):
                         if self.set_access(user, table):
-                            await ctx.send(embed=func.Editable(f"Added {user.name} to {table}", "", "Access"))
+                            await ctx.send(embed=func.Editable(f"Added {user.name} to {table}", "", "Access"), delete_after=config.deltimer)
                         else:
-                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"))
+                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"), delete_after=config.deltimer)
                     else:
-                        await ctx.send(embed=func.Editable_E("That user already has access rights", "", "Access"))
+                        await ctx.send(embed=func.Editable_E("That user already has access rights", "", "Access"), delete_after=config.deltimer)
                 else:
                     await ctx.send(embed=func.NoPerm())
             else:
-                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"))
+                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"), delete_after=config.deltimer)
         else:
-            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"))
+            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"), delete_after=config.deltimer)
 
     @access.group(invoke_without_command=True)
     @commands.check(check.is_admin)
@@ -175,17 +161,17 @@ class Admin(commands.Cog):
                 if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
                     if self.has_access(user):
                         if self.remove_access(user, table):
-                            await ctx.send(embed=func.Editable(f"Removed {user.name} from {table}", "", "Access"))
+                            await ctx.send(embed=func.Editable(f"Removed {user.name} from {table}", "", "Access"), delete_after=config.deltimer)
                         else:
-                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"))
+                            await ctx.send(embed=func.Editable_E("Something went wrong. Please try again", "", "Access"), delete_after=config.deltimer)
                     else:
-                        await ctx.send(embed=func.Editable_E("That user has no access rights", "", "Access"))
+                        await ctx.send(embed=func.Editable_E("That user has no access rights", "", "Access"), delete_after=config.deltimer)
                 else:
                     await ctx.send(embed=func.NoPerm())
             else:
-                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"))
+                await ctx.send(embed=func.Editable_E(f"Please type 'admins' or 'owners'", "", "Access"), delete_after=config.deltimer)
         else:
-            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"))
+            await ctx.send(embed=func.Editable_E(f"Mention a user & access rank", "", "Access"), delete_after=config.deltimer)
 
     def has_access(self, user):
         if self.owner_check(user.id) or self.admin_check(user.id):
@@ -224,6 +210,19 @@ class Admin(commands.Cog):
         UID = str(UID)
         if sql.Entry_Check(UID, "id", "admins"):
             return True
+
+    @commands.command()
+    @commands.check(check.is_owner)
+    async def sqdel(self, ctx, table:str=None, selection:str=None, userid:str=None):
+        UID = str(userid)
+        if table and selection and userid:
+            mydb = sql.createConnection()
+            cur = mydb.cursor()
+            cur.execute(f"DELETE FROM `{config.mysql_db}`.`{table}` WHERE {selection}='{UID}';")
+            mydb.commit()
+            await ctx.send(f"Done. {userid} deleted from {table}", delete_after=10)
+        else:
+            await ctx.send(embed=func.Editable_E("Please provide a table then a userid", "", "MySQL"), delete_after=10)
 
 def setup(bot):
     bot.add_cog(Admin(bot))

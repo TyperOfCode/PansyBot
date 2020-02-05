@@ -13,6 +13,7 @@ class check(commands.Cog):
         self.bot = bot
 
     async def is_owner(ctx):
+        await ctx.message.delete()
         UID = str(ctx.author.id)
         if sql.Entry_Check(UID, "id", "owners"):
             file = open("./utils/logs/Admin.log","a")
@@ -26,6 +27,7 @@ class check(commands.Cog):
             return False
 
     async def is_admin(ctx):
+        await ctx.message.delete()
         UID = str(ctx.author.id)
         if sql.Entry_Check(UID, "id", "admins") or sql.Entry_Check(UID, "id", "owners"):
             file = open("./utils/logs/access.log","a")
