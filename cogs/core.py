@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import string
 from random import randint
 
 import discord
@@ -61,7 +62,7 @@ class Main(commands.Cog):
     async def uinfo(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
-            pass
+
         if user.voice is None:
             channel = "Not in a voice channel"
         else:
@@ -159,30 +160,28 @@ class Main(commands.Cog):
                                 await message.delete()
                         except:
                             return
-                if message.channel.id == 548017507982901258:
-                    if message.author.id != self.bot.user.id:
-                        if len(message.content) <= 20:
-                            for letter in message.content:
-                                if letter.lower() not in string.ascii_letters:
-                                    await message.delete()
-                            targetLetter = message.content[-1:]
-                            if targetLetter.lower() in string.ascii_letters:
-                                target = await message.channel.history(limit=2).flatten()
-                                if target[1].content[-1:].lower() == target[0].content[:1].lower():
-                                    pass
-                                else:
-                                    await message.delete()
-                        else:
-                            await message.delete()
+                if message.channel.id == 548017507982901258 and message.author.id != self.bot.user.id:
+                    if len(message.content) <= 20:
+                        for letter in message.content:
+                            if letter.lower() not in string.ascii_letters:
+                                await message.delete()
+                        targetLetter = message.content[-1:]
+                        if targetLetter.lower() in string.ascii_letters:
+                            target = await message.channel.history(limit=2).flatten()
+                            if target[1].content[-1:].lower() == target[0].content[:1].lower():
+                                pass
+                            else:
+                                await message.delete()
+                    else:
+                        await message.delete()
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        if payload.channel_id == 656491562682810386:
-            if str(payload.emoji) == "\U00002705":
-                if payload.user_id != 655481681741873152:
-                    message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-                    if message.author.id != 231463189487943690:
-                        await message.delete()
+        if payload.channel_id == 656491562682810386 and str(
+                payload.emoji) == "\U00002705" and payload.user_id != 655481681741873152:
+            message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+            if message.author.id != 231463189487943690:
+                await message.delete()
 
     # --------------------------------- Requests Start Here ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -263,7 +262,7 @@ class Main(commands.Cog):
         await access_log.send(
             embed=func.AccessLog(f"Supporter access **Granted** for {ctx.author.id} (**{ctx.author.name}**)",
                                  ctx.message.content))
-        return
+
 
     # Applications
 
