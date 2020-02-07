@@ -99,6 +99,16 @@ class func(commands.Cog):
         embed.set_footer(text=footer)
         return embed
 
+    def sSc(title, description, footer):
+        embed = discord.Embed(
+            title = title,
+            description=description,
+            colour = 0x00FF00,
+            timestamp=datetime.datetime.utcnow()
+            )
+        embed.set_footer(text=footer)
+        return embed
+    
     def log(error):
         file = open("./utils/logs/Pansy.log","a")
         file.write("[{}]: {} \n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (GMT)"), error))

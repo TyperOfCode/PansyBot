@@ -119,7 +119,7 @@ class Main(commands.Cog):
 
     @commands.Cog.listener(name="on_message")
     async def on_message_pingcheck(self, message):
-        if 439327545557778433 in message.raw_mentions:
+        if 439327545557778433 in message.raw_mentions or 636808158521589770 in message.raw_mentions: 
             await message.add_reaction("<a:malwdym:605144102857867294>")
 
     @commands.Cog.listener(name="on_message")
