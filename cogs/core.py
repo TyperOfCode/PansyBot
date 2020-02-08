@@ -125,7 +125,7 @@ class Main(commands.Cog):
     @commands.Cog.listener(name="on_message")
     async def on_message_tournament(self, message):
         if message.channel.id == 671674088682684416:  # Tournaments
-            emotes = ["malWow", "malHeart"]
+            emotes = ["malHeart", "malWow"]
             for x in emotes:
                 await message.add_reaction(get(message.guild.emojis, name=x))
 
@@ -262,7 +262,6 @@ class Main(commands.Cog):
         await access_log.send(
             embed=func.AccessLog(f"Supporter access **Granted** for {ctx.author.id} (**{ctx.author.name}**)",
                                  ctx.message.content))
-
 
     # Applications
 
