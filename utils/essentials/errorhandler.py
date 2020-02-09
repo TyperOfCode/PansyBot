@@ -40,6 +40,7 @@ class ErrorHandler(commands.Cog):
         file = open("./utils/logs/Error.log","a")
         file.write("[{}]: Command Error Logged {}\n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (System Time)"), error))
         file.close()
+        print("An error has been logged")
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))

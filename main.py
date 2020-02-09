@@ -7,7 +7,6 @@ from utils.essentials.functions import func
 from discord.ext import commands
 
 config = functions.get("utils/config.json")
-
 bot = commands.Bot(command_prefix = config.prefix)
 bot.remove_command('help')
 
@@ -18,12 +17,12 @@ async def on_ready():
     people = format(len(guild.members), ",")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"over {people} people"))
 
-for file in os.listdir("cogs"):
+for file in os.listdir("modules"):
     if file.endswith(".py"):
         name = file[:-3]
         try:
-            bot.load_extension(f"cogs.{name}")
-            print(f"{name} Loading Sucessful")
+            bot.load_extension(f"modules.{name}")
+            print(f"{name} Module Loaded")
         except Exception as error:
             traceback.print_exc()
 
