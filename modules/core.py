@@ -89,6 +89,55 @@ class Main(commands.Cog):
         embed.add_field(name="Voice", value=channel, inline=True)
         await ctx.send(embed=embed, delete_after=30)
 
+    @commands.command()
+    async def hug(self, ctx, user : discord.User = None):
+        if user:
+            if user.id != 669724238252474387:
+                embed = discord.Embed(
+                    colour = 0xff7af8,
+                    description = f'{ctx.author.mention} Hugged {user.mention} <a:malpotatoeshuggle:608280365987135501>\n\n Return the favour!'
+                    )
+                embed.set_footer(text=f"Hugs")
+                await ctx.send(embed=embed)
+            else:
+                embed = discord.Embed(
+                    colour = 0xff7af8,
+                    description = f'{ctx.author.mention} Hugged {user.mention} <a:malpotatoeshuggle:608280365987135501>\n\n Return the favour!'
+                    )
+                embed.set_footer(text=f"Hugs")
+                await ctx.send(embed=embed)
+                await ctx.send(f"{ctx.author.mention} <a:malpotatoeshuggle:608280365987135501>")
+        else:
+            embed = discord.Embed(
+                colour = 0xff7af8,
+                description = f'You hugged yourself <a:malpotatoeshuggle:608280365987135501>'
+                )
+            embed.set_footer(text=f"Hugs")
+            await ctx.send(embed=embed)
+
+    """@commands.command() Not complete
+    async def love(self, ctx, user : discord.User = None):
+        if user:
+            if user.id != 669724238252474387:
+                embed = discord.Embed(colour= 0xff7af8)
+                embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
+                embed.set_author(name=f"{ctx.author.name} loves {user.name}")
+
+                await ctx.send(embed=embed)
+            else:
+                embed = discord.Embed(colour= 0xff7af8)
+                embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
+                embed.set_author(name=f"{ctx.author.name} loves {user.name}")
+
+                await ctx.send(embed=embed)
+                await ctx.send(f"{ctx.author.mention} ♥️")
+        else:
+            embed = discord.Embed(colour= 0xff7af8)
+            embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
+            embed.set_author(name=f"{ctx.author.name} loves themself")
+
+            await ctx.send(embed=embed)"""
+
 # Events ------------------------------------------------------------------------------------------------------
 
     @commands.Cog.listener()

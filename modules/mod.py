@@ -26,14 +26,14 @@ class Mod(commands.Cog):
 
         self.mainrole = 574073241124208660
         self.vcrole = 590194178877685762
-        self.globalrole = 574073241124208660
+        self.globerole = 574073241124208660
         self.muterole = 542728404693286912
         self.blacklistrole = 571926055817052190
         self.logchannel = 674977758794743843
 
         self.unpunish.start()
 
-        
+
     async def sendlog(self, title, description, footer, color):
         channel = await self.bot.fetch_channel(self.logchannel)
         embed = discord.Embed(
@@ -42,7 +42,7 @@ class Mod(commands.Cog):
             colour = color,
             timestamp=datetime.utcnow()
             )
-        
+
         embed.set_footer(text=footer)
 
         try:
@@ -72,7 +72,7 @@ class Mod(commands.Cog):
                         break
         except:
             return False
-        
+
         if time == '':
             return False
         if forever:
@@ -81,15 +81,15 @@ class Mod(commands.Cog):
         for i, v in enumerate(available_times):
             if v in time:
                 return int(time[:-1]) * multiplier[i]
-            
-        
-            
+
+
+
         try:
             return int(time)
         except:
             pass
 
-        
+
         return False
 
     def RegisterMember(self,member):
@@ -107,7 +107,7 @@ class Mod(commands.Cog):
 
     @commands.command(name='main')
     async def main(self, ctx, member : discord.Member = None, time = None, flag = None):
-        
+
         """ p^Main command """
 
         if not await check.is_helper_role(self,ctx):
@@ -147,7 +147,7 @@ class Mod(commands.Cog):
             await ctx.send(embed=func.eErr('Invalid Time','The time argument is not valid.\nEg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)','Main'))
             return
 
-    
+
         self.RegisterMember(member)
 
         if flag == '-undo' or flag == '-u':
@@ -215,12 +215,12 @@ class Mod(commands.Cog):
         date = datetime.strftime(date + timedelta(seconds=timeInSeconds),'%d/%m/%Y %H:%M:%S')
         await ctx.send(embed=func.sSc('Success!' ,f'The member {member.mention} now is punished until `{date}` (Main)','Main'))
         await self.sendlog('User punished (main)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Punished until: {date}` \n**Moderator:** `{ctx.author}`\n**Moderator ID:** `{ctx.author.id}`','Main',0xff2424)
-        
+
         return
 
     @commands.command(name='vc')
     async def vc(self, ctx, member : discord.Member = None, time = None, flag = None):
-        
+
         """ p^vc command """
 
         if not await check.is_helper_role(self,ctx):
@@ -260,7 +260,7 @@ class Mod(commands.Cog):
             await ctx.send(embed=func.eErr('Invalid Time','The time argument is not valid.\nEg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)','vc'))
             return
 
-    
+
         self.RegisterMember(member)
 
         if flag == '-undo' or flag == '-u':
@@ -328,12 +328,12 @@ class Mod(commands.Cog):
         date = datetime.strftime(date + timedelta(seconds=timeInSeconds),'%d/%m/%Y %H:%M:%S')
         await ctx.send(embed=func.sSc('Success!' ,f'The member {member.mention} now is punished until `{date}` (vc)','vc'))
         await self.sendlog('User punished (vc)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Punished until: {date}` \n**Moderator:** `{ctx.author}`\n**Moderator ID:** `{ctx.author.id}`','vc',0xff2424)
-        
+
         return
-    
+
     @commands.command(name='globe')
     async def globe(self, ctx, member : discord.Member = None, time = None, flag = None):
-        
+
         """ p^globe command """
 
         if not await check.is_helper_role(self,ctx):
@@ -373,7 +373,7 @@ class Mod(commands.Cog):
             await ctx.send(embed=func.eErr('Invalid Time','The time argument is not valid.\nEg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)','globe'))
             return
 
-    
+
         self.RegisterMember(member)
 
         if flag == '-undo' or flag == '-u':
@@ -441,12 +441,12 @@ class Mod(commands.Cog):
         date = datetime.strftime(date + timedelta(seconds=timeInSeconds),'%d/%m/%Y %H:%M:%S')
         await ctx.send(embed=func.sSc('Success!' ,f'The member {member.mention} now is punished until `{date}` (globe)','globe'))
         await self.sendlog('User punished (globe)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Punished until: {date}` \n**Moderator:** `{ctx.author}`\n**Moderator ID:** `{ctx.author.id}`','globe',0xff2424)
-        
+
         return
 
     @commands.command(name='mute')
     async def mute(self, ctx, member : discord.Member = None, time = None, flag = None):
-        
+
         """ p^mute command """
 
         if not await check.is_helper_role(self,ctx):
@@ -486,7 +486,7 @@ class Mod(commands.Cog):
             await ctx.send(embed=func.eErr('Invalid Time','The time argument is not valid.\nEg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)','mute'))
             return
 
-    
+
         self.RegisterMember(member)
 
         if flag == '-undo' or flag == '-u':
@@ -554,12 +554,12 @@ class Mod(commands.Cog):
         date = datetime.strftime(date + timedelta(seconds=timeInSeconds),'%d/%m/%Y %H:%M:%S')
         await ctx.send(embed=func.sSc('Success!' ,f'The member {member.mention} now is punished until `{date}` (mute)','mute'))
         await self.sendlog('User punished (mute)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Punished until: {date}` \n**Moderator:** `{ctx.author}`\n**Moderator ID:** `{ctx.author.id}`','mute',0xff2424)
-        
+
         return
 
     @commands.command(name='blacklist')
     async def blacklist(self, ctx, member : discord.Member = None, time = None, flag = None):
-        
+
         """ p^blacklist command """
 
         if not await check.is_helper_role(self,ctx):
@@ -599,7 +599,7 @@ class Mod(commands.Cog):
             await ctx.send(embed=func.eErr('Invalid Time','The time argument is not valid.\nEg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)','blacklist'))
             return
 
-    
+
         self.RegisterMember(member)
 
         if flag == '-undo' or flag == '-u':
@@ -667,7 +667,7 @@ class Mod(commands.Cog):
         date = datetime.strftime(date + timedelta(seconds=timeInSeconds),'%d/%m/%Y %H:%M:%S')
         await ctx.send(embed=func.sSc('Success!' ,f'The member {member.mention} now is punished until `{date}` (blacklist)','blacklist'))
         await self.sendlog('User punished (blacklist)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Punished until: {date}` \n**Moderator:** `{ctx.author}`\n**Moderator ID:** `{ctx.author.id}`','blacklist',0xff2424)
-        
+
         return
 
 
@@ -696,11 +696,11 @@ class Mod(commands.Cog):
         **-undo,-u** | removes the user\'s punishment
         **-minus,-m** | Instead of adding the time, it minuses it
         **-replace,-r** | replaces the current punishment time with the new time.
-        
+
         **__Time__**
-        Eg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever) 
+        Eg: `1d, 34m, f` (m = Minutes, h = Hour, d = Day,f = Forever)
         """.replace('        ','')
-        
+
         embed = discord.Embed(
             title = 'Moderator Help Page',
             description=helppage,
@@ -717,11 +717,11 @@ class Mod(commands.Cog):
         if not await check.is_helper_role(self,ctx):
             await ctx.send(embed=func.NoPerm())
             return
-            
+
         if member == None:
             await ctx.send(embed=func.eErr('Please mention a user','Usage: `p^check <@User>` Do not include <>','Check'))
             return
-        
+
         self.cursor.execute(f'SELECT main, vc, globe, mute, blacklist FROM users WHERE userid = {member.id}')
         user = self.cursor.fetchone()
 
@@ -758,7 +758,7 @@ class Mod(commands.Cog):
         embed.set_footer(text='Check')
         await ctx.send(embed=embed)
         return
-            
+
     @tasks.loop(seconds=1)
     async def unpunish(self):
 
@@ -896,30 +896,5 @@ class Mod(commands.Cog):
             await member.remove_roles(role,reason='Time was up')
             await self.sendlog('User unpunished (blacklist)',f'**Member**: `{member}` - `{member.id}`\n**Action:** `Unpunished`\n**Moderator:** `Time was Up`\n**Moderator ID:** `Time was Up`','blacklist',0x00FF00)
 
-
-            
-        
-
-
-        
-
-
-        
-
-        
-        
-
-
-        
-
-        
-        
-
-        
-
-
-
-
-    
 def setup(bot):
     bot.add_cog(Mod(bot))

@@ -13,7 +13,7 @@ class cotd(commands.Cog):
         self.bot = bot
         self.FILEPATH = os.path.abspath(__file__)
         self.FILEDIR = self.FILEPATH.replace(os.path.basename(self.FILEPATH),'')
-        self.SAVELOC = self.FILEDIR[:-5] + "./data/cotd/"
+        self.SAVELOC = "./data/cotd/"
 
         self.serverid = 540784184470274069
         self.pingroleid = 661212314908884992
@@ -79,7 +79,7 @@ class cotd(commands.Cog):
                 if self.servercheck(ctx.guild.id):
 
                         if channelm == None:
-                            await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to add to the list',ctx.guild))
+                            await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to add to the list',ctx.guild), delete_after=config.deltimer)
                             return
 
                         multiple = False
@@ -95,11 +95,11 @@ class cotd(commands.Cog):
 
                             channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
                             if str(i.id) in [i.split('|')[0] for i in channellist]:
-                                await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{i.mention} is already in the list, skipping..',ctx.guild))
+                                await ctx.send(embed=self.errorembed('Error - Dupecheck',f'{i.mention} is already in the list, skipping..',ctx.guild), delete_after=config.deltimer)
                                 continue
 
                             if not multiple:
-                                await ctx.send(embed=self.acceptembed('Success!',f'Channel {i.mention} has been added to the list',ctx.guild))
+                                await ctx.send(embed=self.acceptembed('Success!',f'Channel {i.mention} has been added to the list',ctx.guild), delete_after=config.deltimer)
 
                             write = open(self.SAVELOC + 'cotd.txt','a')
                             write.write(f"\n{i.id}|0")
@@ -112,16 +112,16 @@ class cotd(commands.Cog):
                             for i in multilist:
                                 channelmentions += f'{i.mention}, '
 
-                            await ctx.send(embed=self.acceptembed('Success!',f'Channels {channelmentions} have been added to the list',ctx.guild))
+                            await ctx.send(embed=self.acceptembed('Success!',f'Channels {channelmentions} have been added to the list',ctx.guild), delete_after=config.deltimer)
 
                         return
                 else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild), delete_after=config.deltimer)
                 return
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @_channel.command(name='remove')
     async def _remove(self, ctx, channelm: discord.TextChannel = None):
@@ -134,7 +134,7 @@ class cotd(commands.Cog):
                 if self.servercheck(ctx.guild.id):
 
                         if channelm == None:
-                            await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to remove from the list',ctx.guild))
+                            await ctx.send(embed=self.errorembed('Error - Missing argument','Please mention a channel to remove from the list',ctx.guild), delete_after=config.deltimer)
                             return
 
 
@@ -142,10 +142,10 @@ class cotd(commands.Cog):
                         channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
 
                         if str(channelm.id) not in [i.split('|')[0] for i in channellist]:
-                            await ctx.send(embed=self.errorembed('Error - ID Check',f'{channelm.mention} is not in the list',ctx.guild))
+                            await ctx.send(embed=self.errorembed('Error - ID Check',f'{channelm.mention} is not in the list',ctx.guild), delete_after=config.deltimer)
                             return
 
-                        await ctx.send(embed=self.acceptembed('Success!',f'Channel {channelm.mention} has been removed from the list',ctx.guild))
+                        await ctx.send(embed=self.acceptembed('Success!',f'Channel {channelm.mention} has been removed from the list',ctx.guild), delete_after=config.deltimer)
 
                         st = ''
                         for i in channellist:
@@ -159,14 +159,14 @@ class cotd(commands.Cog):
 
                         return
                 else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild), delete_after=config.deltimer)
                 return
 
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @_channel.command(name='removeall')
     async def _removeall(self, ctx):
@@ -182,18 +182,18 @@ class cotd(commands.Cog):
                         write.write('')
                         write.close()
 
-                        await ctx.send(embed=self.acceptembed('Success!',f'The list has been cleared!',ctx.guild))
+                        await ctx.send(embed=self.acceptembed('Success!',f'The list has been cleared!',ctx.guild), delete_after=config.deltimer)
 
                         return
                 else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild), delete_after=config.deltimer)
                 return
 
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @_channel.command(name='list')
     async def _list(self, ctx):
@@ -219,17 +219,17 @@ class cotd(commands.Cog):
 
                         chanstr += f'{channel.mention} - {self.yesno(splitted[1])}\n'
                     if chanstr != '':
-                        await ctx.send(embed=self.miscembed('Channel List',chanstr,ctx.guild))
+                        await ctx.send(embed=self.miscembed('Channel List',chanstr,ctx.guild), delete_after=config.deltimer)
                     else:
-                        await ctx.send(embed=self.miscembed('Channel list','The channel list is empty!',ctx.guild))
+                        await ctx.send(embed=self.miscembed('Channel list','The channel list is empty!',ctx.guild), delete_after=config.deltimer)
                     return
             else:
-                await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
 
 
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @_channel.command(name='reset')
     async def _reset(self, ctx):
@@ -245,7 +245,7 @@ class cotd(commands.Cog):
                         channellist = open(self.SAVELOC + 'cotd.txt','r').read().split('\n')
 
 
-                        msg = await ctx.send(embed=self.miscembed('Resetting list','Resetting the list....',ctx.guild))
+                        msg = await ctx.send(embed=self.miscembed('Resetting list','Resetting the list....',ctx.guild), delete_after=config.deltimer)
 
 
                         st = ''
@@ -281,20 +281,20 @@ class cotd(commands.Cog):
                         reset = open(self.SAVELOC + 'cotdSave.txt','w')
                         reset.close()
 
-                        await msg.edit(embed=self.acceptembed('Success!','The list has been resetted!',ctx.guild))
+                        await msg.edit(embed=self.acceptembed('Success!','The list has been resetted!',ctx.guild), delete_after=config.deltimer)
 
 
 
                         return
                 else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild), delete_after=config.deltimer)
                 return
 
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @_channel.command(name='choosenow')
     async def _choosenow(self, ctx):
@@ -319,7 +319,7 @@ class cotd(commands.Cog):
                             try:
                                 returnchannel = await self.bot.fetch_channel(int(save[0]))
                                 returncategory = await self.bot.fetch_channel(int(save[2]))
-                                await ctx.send(embed=self.errorembed('List is complete or empty','Cant choose from complete or empty list\n - List has auto been resetted',ctx.guild))
+                                await ctx.send(embed=self.errorembed('List is complete or empty','Cant choose from complete or empty list\n - List has auto been resetted',ctx.guild), delete_after=config.deltimer)
                                 try:
                                     await returnchannel.edit(name=save[1],category=returncategory,position=int(save[3]))
                                 except:
@@ -408,14 +408,14 @@ class cotd(commands.Cog):
 
 
                 else:
-                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+                    await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
             else:
-                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild))
+                await ctx.send(embed=self.errorembed('Error - Missing Permissions','You dont have the authority to use this command',ctx.guild), delete_after=config.deltimer)
                 return
 
         else:
-            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild))
+            await ctx.send(embed=self.errorembed('Error - Wrong Channel','Please only use the channel commands in the MAL server',ctx.guild), delete_after=config.deltimer)
 
     @tasks.loop(seconds=1)
     async def cotdchoose(self):
