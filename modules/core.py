@@ -3,6 +3,8 @@ import discord
 import asyncio
 import datetime
 import mysql.connector
+import aiohttp
+import json
 
 from random import randint
 from discord import Spotify
@@ -10,6 +12,7 @@ from discord.ext import commands, tasks
 
 from utils.essentials import sql
 from utils.essentials import functions
+from random import choice as randchoice
 from utils.essentials.checks import check
 from utils.essentials.functions import func
 
@@ -18,6 +21,7 @@ config = functions.get("utils/config.json")
 class Main(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
 
     @commands.command(no_pm=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -90,53 +94,121 @@ class Main(commands.Cog):
         await ctx.send(embed=embed, delete_after=30)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def spotify(self, ctx, user : discord.Member=None):
+        await ctx.message.delete()
+        if user == None:
+            user = ctx.author
+            pass
+        if user.activities:
+            for activity in user.activities:
+                if isinstance(activity, Spotify):
+                    embed = discord.Embed(
+                        description = f"Listening to {activity.title}",
+                        colour = 0xeb8034,
+                        )
+                    embed.set_thumbnail(url=activity.album_cover_url)
+                    embed.add_field(name="Artist", value=activity.artist)
+                    embed.add_field(name="Album", value=activity.album)
+
+                    embed.set_footer(text="Song Started at {}".format(activity.created_at.strftime("%H:%M:%S")))
+                    await ctx.send(embed=embed, delete_after=15)
+
+
+    async def api_call(self, extension):
+        search = (f"https://nekos.life/api/v2{extension}")
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(search) as r:
+                result = await r.json()
+                link = result["url"]
+                return link
+
+    @commands.command()
     async def hug(self, ctx, user : discord.User = None):
-        if user:
-            if user.id != 669724238252474387:
-                embed = discord.Embed(
-                    colour = 0xff7af8,
-                    description = f'{ctx.author.mention} Hugged {user.mention} <a:malpotatoeshuggle:608280365987135501>\n\n Return the favour!'
-                    )
-                embed.set_footer(text=f"Hugs")
-                await ctx.send(embed=embed)
+        link = await self.api_call("/img/hug")
+        if ctx.channel.id != 542291426051096606:
+            if user:
+                if user.id != 669724238252474387:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} hugged {user.name}")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} hugged me")
+                    await ctx.send(embed=embed)
+                    await ctx.send(f"{ctx.author.mention} <a:malpotatoeshuggle:608280365987135501>")
             else:
-                embed = discord.Embed(
-                    colour = 0xff7af8,
-                    description = f'{ctx.author.mention} Hugged {user.mention} <a:malpotatoeshuggle:608280365987135501>\n\n Return the favour!'
-                    )
-                embed.set_footer(text=f"Hugs")
+                embed = discord.Embed(colour = 0xff7af8)
+                embed.set_image(url=link)
+                embed.set_author(name=f"{ctx.author.name} hugged themself")
                 await ctx.send(embed=embed)
-                await ctx.send(f"{ctx.author.mention} <a:malpotatoeshuggle:608280365987135501>")
-        else:
-            embed = discord.Embed(
-                colour = 0xff7af8,
-                description = f'You hugged yourself <a:malpotatoeshuggle:608280365987135501>'
-                )
-            embed.set_footer(text=f"Hugs")
-            await ctx.send(embed=embed)
 
-    """@commands.command() Not complete
-    async def love(self, ctx, user : discord.User = None):
-        if user:
-            if user.id != 669724238252474387:
-                embed = discord.Embed(colour= 0xff7af8)
-                embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
-                embed.set_author(name=f"{ctx.author.name} loves {user.name}")
-
-                await ctx.send(embed=embed)
+    @commands.command()
+    async def kiss(self, ctx, user : discord.User = None):
+        link = await self.api_call("/img/kiss")
+        if ctx.channel != 542291426051096606:
+            if user and user != ctx.author:
+                if user.id != 669724238252474387:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} kissed {user.name}")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} kissed me")
+                    await ctx.send(embed=embed)
+                    await ctx.send(f"{ctx.author.mention} <:Kiss:674302945990410306>")
             else:
-                embed = discord.Embed(colour= 0xff7af8)
-                embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
-                embed.set_author(name=f"{ctx.author.name} loves {user.name}")
-
+                embed = discord.Embed(colour = 0xff7af8)
+                embed.set_author(name=f"{ctx.author.name} You cannot kiss yourself, silly.")
                 await ctx.send(embed=embed)
-                await ctx.send(f"{ctx.author.mention} ♥️")
-        else:
-            embed = discord.Embed(colour= 0xff7af8)
-            embed.set_image(url="https://cdn.discordapp.com/embed/avatars/0.png")
-            embed.set_author(name=f"{ctx.author.name} loves themself")
 
-            await ctx.send(embed=embed)"""
+    @commands.command()
+    async def cuddle(self, ctx, user : discord.User = None):
+        link = await self.api_call("/img/cuddle")
+        if ctx.channel.id != 542291426051096606:
+            if user:
+                if user.id != 669724238252474387:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} cuddled {user.name}")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} cuddled me")
+                    await ctx.send(embed=embed)
+                    await ctx.send(f"{ctx.author.mention} <a:malCuddle:608280367451078667>")
+            else:
+                embed = discord.Embed(colour = 0xff7af8)
+                embed.set_image(url=link)
+                embed.set_author(name=f"{ctx.author.name} cuddled themself")
+                await ctx.send(embed=embed)
+
+    @commands.command()
+    async def whack(self, ctx, user : discord.User = None):
+        link = await self.api_call("/img/slap")
+        if ctx.channel.id != 542291426051096606:
+            if user:
+                if user.id != 669724238252474387:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} whacked {user.name}")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(colour = 0xff7af8)
+                    embed.set_image(url=link)
+                    embed.set_author(name=f"{ctx.author.name} whacked me")
+                    await ctx.send(embed=embed)
+                    await ctx.send(f"{ctx.author.mention} <:malkanoncry:644320461135806464>")
+            else:
+                embed = discord.Embed(colour = 0xff7af8)
+                embed.set_image(url=link)
+                embed.set_author(name=f"{ctx.author.name} whacked themself")
+                await ctx.send(embed=embed)
 
 # Events ------------------------------------------------------------------------------------------------------
 
@@ -233,8 +305,13 @@ class Main(commands.Cog):
     async def on_command_error(self, ctx, error):
         access_log = discord.utils.get(ctx.guild.text_channels, name="access-log")
 
-        if isinstance(error, commands.MissingAnyRole):
-            await access_log.send(embed=func.AccessLog(f"Supporter access **Denied** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
+        ignored = (commands.CommandNotFound, commands.NoPrivateMessage, commands.DisabledCommand, discord.NotFound)
+        error = getattr(error, "original", error)
+
+        if isinstance(error, ignored):
+            return
+
+        elif isinstance(error, commands.MissingAnyRole):
             return await ctx.send(embed=func.SupportErr(), delete_after=config.deltimer)
         else:
             raise error
@@ -242,7 +319,6 @@ class Main(commands.Cog):
     @commands.group(invoke_without_command=True, aliases=["colour"])
     @commands.has_any_role("ᴹᴬᴸ Donator💎", "ᴹᴬᴸ Nitro Booster 🌺", "ᴹᴬᴸ Giveaway Donator 🌻", "ᴹᴬᴸ Supporter 🌹")
     async def color(self, ctx, number:int=None):
-        await self.is_supporter(ctx)
         await ctx.message.delete()
         user = ctx.author
         rolelist = [655070657612218370, 659133244205301781, 659133240237359135, 659133249284603956, 659133242204618775, 659146257360748574, 659133242930364445, 659133246000594967, 659133249662091275, 659146251941576740, 669241392459022401, 659146254382792718, 659146284606947366, 659146285236092948, 668858038714761237]
@@ -272,7 +348,6 @@ class Main(commands.Cog):
     @color.group(invoke_without_command=True)
     @commands.has_any_role("ᴹᴬᴸ Donator💎", "ᴹᴬᴸ Nitro Booster 🌺", "ᴹᴬᴸ Giveaway Donator 🌻", "ᴹᴬᴸ Supporter 🌹")
     async def clear(self, ctx):
-        await self.is_supporter(ctx)
         await ctx.message.delete()
         user = ctx.author
         rolelist = [655070657612218370, 659133244205301781, 659133240237359135, 659133249284603956, 659133242204618775, 659146257360748574, 659133242930364445, 659133246000594967, 659133249662091275, 659146251941576740, 669241392459022401, 659146254382792718, 659146284606947366, 659146285236092948, 668858038714761237]
@@ -288,11 +363,6 @@ class Main(commands.Cog):
         else:
             await channel1.send(f"{ctx.author.mention} Retry your command here", delete_after=30)
             await channel2.send(f"{ctx.author.mention} Or here", delete_after=30)
-
-    async def is_supporter(self, ctx):
-        access_log = discord.utils.get(ctx.guild.text_channels, name="access-log")
-        await access_log.send(embed=func.AccessLog(f"Supporter access **Granted** for {ctx.author.id} (**{ctx.author.name}**)", ctx.message.content))
-        return
 
 # Applications
 
