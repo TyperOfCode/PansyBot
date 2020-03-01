@@ -4,6 +4,8 @@ import discord
 from discord import Spotify
 from discord.ext import commands
 
+from utils.essentials.functions import func
+
 class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

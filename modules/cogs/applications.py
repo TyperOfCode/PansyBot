@@ -4,7 +4,9 @@ import mysql.connector
 
 from discord.ext import commands
 
+from utils.essentials import sql
 from utils.essentials.checks import check
+from utils.essentials.functions import func
 
 class Applications(commands.Cog):
     def __init__(self, bot):

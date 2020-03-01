@@ -19,7 +19,7 @@ async def on_ready():
     for file in os.listdir("modules/cogs"):
         if file.endswith(".py"):
             cogs += 1
-    print(f'Loaded {cogs} Cogs\nLogged in as: {bot.user.name}\nAPI Version: {discord.__version__}\n\n')
+    print(f'\n\nLoaded {cogs} Cogs\nLogged in as: {bot.user.name}\nAPI Version: {discord.__version__}\n\n')
     try:
         guild = bot.get_guild(540784184470274069)
         people = format(len(guild.members), ",")
@@ -36,5 +36,5 @@ for file in os.listdir("modules"):
         except Exception as error:
             traceback.print_exc()
 
-bot.load_extension("utils.essentials.errorhandler")
+#bot.load_extension("utils.essentials.errorhandler")
 bot.run(config.token, reconnect=True)
