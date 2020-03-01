@@ -1,26 +1,29 @@
 import discord
-from datetime import datetime
-from discord.ext import tasks, commands
-import asyncio
-from discord.utils import get
-import os
-from random import choice, randint
+import datetime
 import string
+import os
 
+from discord.utils import get
+from discord.ext import tasks, commands
+
+from utils.essentials import functions
+from utils.essentials.functions import func
+
+config = functions.get("utils/config.json")
 
 class cotd(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.FILEPATH = os.path.abspath(__file__)
         self.FILEDIR = self.FILEPATH.replace(os.path.basename(self.FILEPATH),'')
-        self.SAVELOC = "./data/cotd/"
+        self.SAVELOC = "./modules/cogs/data/cotd/"
 
         self.serverid = 540784184470274069
         self.pingroleid = 661212314908884992
 
         self.servercheck = lambda x : x == self.serverid
         self.dmcheck = lambda x : str(x.channel).startswith('Direct')
-        self.yesno = lambda x : ':white_check_mark:' if x is '1' else ':x:'
+        self.yesno = lambda x : ':white_check_mark:' if x == '1' else ':x:'
 
         self.cotdchoose.start()
 
@@ -29,17 +32,17 @@ class cotd(commands.Cog):
 
     def errorembed(self, title, content, guild):
         embed = discord.Embed(title=title,description=content,color=0xff0000)
-        embed.set_footer(icon_url=guild.icon_url,text="Error - Pansy - MAL")
+        embed.set_footer(icon_url=guild.icon_url,text="Error - MAL")
         return embed
 
     def miscembed(self,title,content,guild):
         embed = discord.Embed(title=title,description=content,color=0xB407DE)
-        embed.set_footer(icon_url=guild.icon_url,text="Misc - Pansy - MAL")
+        embed.set_footer(icon_url=guild.icon_url,text="Misc - MAL")
         return embed
 
     def acceptembed(self,title,content,guild):
         embed = discord.Embed(title=title,description=content,color=0x00ff00)
-        embed.set_footer(icon_url=guild.icon_url,text="Accept - Pansy - MAL")
+        embed.set_footer(icon_url=guild.icon_url,text="Accept - MAL")
         return embed
 
     def adminperms(self, ctx):

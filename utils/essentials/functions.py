@@ -1,8 +1,9 @@
-import os, traceback
+import sys, os, traceback
 import datetime
 import discord
 import json
 
+from time import sleep
 from discord.ext import commands
 from collections import namedtuple
 
@@ -99,20 +100,17 @@ class func(commands.Cog):
         embed.set_footer(text=footer)
         return embed
 
-    def sSc(title, description, footer):
-        embed = discord.Embed(
-            title = title,
-            description=description,
-            colour = 0x00FF00,
-            timestamp=datetime.datetime.utcnow()
-            )
-        embed.set_footer(text=footer)
-        return embed
-    
     def log(error):
-        file = open("./utils/logs/Pansy.log","a")
+        file = open("./utils/logs/Hana.log","a")
         file.write("[{}]: {} \n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (GMT)"), error))
         file.close()
+
+    def progress():
+        for i in range(21):
+            sys.stdout.write('\r')
+            sys.stdout.write("[%-20s] %d%%" % ('='*i, 5*i))
+            sys.stdout.flush()
+            sleep(0.05)
 
 def setup(client):
     client.add_cog(func(client))
