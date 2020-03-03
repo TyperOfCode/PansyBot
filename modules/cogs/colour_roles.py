@@ -33,7 +33,7 @@ class Colour_Roles(commands.Cog):
                 embed = discord.Embed(title=f"**{ctx.author.name}** obtained color {number}!", colour=colorembed, timestamp=datetime.datetime.utcfromtimestamp(1579828506))
                 await ctx.send(embed=embed, delete_after=10)
             else:
-                embed = discord.Embed(title="Type !color <number> with the number you want", colour=discord.Colour(0xd42c2c), timestamp=datetime.datetime.utcfromtimestamp(1579828506))
+                embed = discord.Embed(title=f"Type {ctx.prefix}color <number> with the number you want", colour=discord.Colour(0xd42c2c), timestamp=datetime.datetime.utcfromtimestamp(1579828506))
                 embed.set_image(url="https://i.imgur.com/H8Wk8wG.png")
                 await ctx.send(embed=embed, delete_after=30)
         else:

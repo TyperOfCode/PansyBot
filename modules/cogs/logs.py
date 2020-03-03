@@ -28,7 +28,7 @@ class Logs(commands.Cog):
             await ctx.send(embed=func.Editable_E("Invalid Arguments", f"{ctx.prefix}logs set flag\n{ctx.prefix}logs toggle", "Logs"), delete_after=config.deltimer)
         else:
             self.logs[GID] = logs_settings
-            with open("./data/settings/logs.json", "w") as f:
+            with open("./modules/cogs/data/logs/logs.json", "w") as f:
                 json.dump(self.logs, f, indent=4)
                 await ctx.reinvoke()
 
@@ -41,31 +41,31 @@ class Logs(commands.Cog):
             if flag == "-s":
                 self.logs[GID]["Server_Logs"]["Enabled"] = True
                 self.logs[GID]["Server_Logs"]["Channel"] = ctx.channel.id
-                with open("./data/settings/logs.json", "w") as f:
+                with open("./modules/cogs/data/logs/logs.json", "w") as f:
                     json.dump(self.logs, f, indent=4)
                     await ctx.send(embed=func.Editable_S(f"Server Logs Enabled and set to **{ctx.channel.name}**", "", "Logs"), delete_after=config.deltimer)
             elif flag == "-e":
                 self.logs[GID]["Edit_Logs"]["Enabled"] = True
                 self.logs[GID]["Edit_Logs"]["Channel"] = ctx.channel.id
-                with open("./data/settings/logs.json", "w") as f:
+                with open("./modules/cogs/data/logs/logs.json", "w") as f:
                     json.dump(self.logs, f, indent=4)
                     await ctx.send(embed=func.Editable_S(f"Message Edit Logs Enabled and set to **{ctx.channel.name}**", "", "Logs"), delete_after=config.deltimer)
             elif flag == "-d":
                 self.logs[GID]["Delete_Logs"]["Enabled"] = True
                 self.logs[GID]["Delete_Logs"]["Channel"] = ctx.channel.id
-                with open("./data/settings/logs.json", "w") as f:
+                with open("./modules/cogs/data/logs/logs.json", "w") as f:
                     json.dump(self.logs, f, indent=4)
                     await ctx.send(embed=func.Editable_S(f"Delete logs Enabled and set to **{ctx.channel.name}**", "", "Logs"), delete_after=config.deltimer)
             elif flag == "-c":
                 self.logs[GID]["Channel_Logs"]["Enabled"] = True
                 self.logs[GID]["Channel_Logs"]["Channel"] = ctx.channel.id
-                with open("./data/settings/logs.json", "w") as f:
+                with open("./modules/cogs/data/logs/logs.json", "w") as f:
                     json.dump(self.logs, f, indent=4)
                     await ctx.send(embed=func.Editable_S(f"Channel Edit logs Enabled and set to **{ctx.channel.name}**", "", "Logs"), delete_after=config.deltimer)
             elif flag == "-r":
                 self.logs[GID]["Role_Logs"]["Enabled"] = True
                 self.logs[GID]["Role_Logs"]["Channel"] = ctx.channel.id
-                with open("./data/settings/logs.json", "w") as f:
+                with open("./modules/cogs/data/logs/logs.json", "w") as f:
                     json.dump(self.logs, f, indent=4)
                     await ctx.send(embed=func.Editable_S(f"Channel Edit logs Enabled and set to **{ctx.channel.name}**", "", "Logs"), delete_after=config.deltimer)
         else:
@@ -80,60 +80,60 @@ class Logs(commands.Cog):
             if log == "Delete" or log == "delete":
                 if self.logs[GID]["Delete_Logs"]["Enabled"] == False:
                     self.logs[GID]["Delete_Logs"]["Enabled"] = True
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Delete** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Delete_Logs"]["Enabled"] = False
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Delete** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
 
             elif log == "Edit" or log == "edit":
                 if self.logs[GID]["Edit_Logs"]["Enabled"] == False:
                     self.logs[GID]["Edit_Logs"]["Enabled"] = True
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Edit** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Edit_Logs"]["Enabled"] = False
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Edit** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
 
             elif log == "Server" or log == "server":
                 if self.logs[GID]["Server_Logs"]["Enabled"] == False:
                     self.logs[GID]["Server_Logs"]["Enabled"] = True
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Server** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Server_Logs"]["Enabled"] = False
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Server** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
 
             elif log == "channel" or log == "channel":
                 if self.logs[GID]["Channel_Logs"]["Enabled"] == False:
                     self.logs[GID]["Channel_Logs"]["Enabled"] = True
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Channel** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Channel_Logs"]["Enabled"] = False
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Channel** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
 
             elif log == "Roles" or log == "roles":
                 if self.logs[GID]["Role_Logs"]["Enabled"] == False:
                     self.logs[GID]["Role_Logs"]["Enabled"] = True
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Channel** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Role_Logs"]["Enabled"] = False
-                    with open("./data/settings/logs.json", "w") as f:
+                    with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
                         await ctx.send(embed=func.Editable_S(f"**Channel** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
         else:
@@ -308,25 +308,28 @@ class Logs(commands.Cog):
         GID = str(after.guild.id)
         if GID in self.logs:
             if self.logs[GID]['Role_Logs']["Enabled"] == True:
-                channel = await self.bot.fetch_channel(self.logs[GID]["Role_Logs"]["Channel"])
-                time = datetime.datetime.now()
-                fmt = '%H:%M:%S'
-                if before.roles != after.roles:
-                    for roles in before.roles:
-                        before_roles.append(roles.name)
-                    before_roles.remove("@everyone")
-                    for roles in after.roles:
-                        after_roles.append(roles.name)
-                    after_roles.remove("@everyone")
-                    role = discord.Embed(colour=0xf59542, timestamp=datetime.datetime.utcnow())
-                    infomessage = f"__{before.name}__'s roles were updated"
-                    role.add_field(name="Info:", value=infomessage, inline=False)
-                    role.add_field(name="Before:", value=", ".join(before_roles), inline=False)
-                    role.add_field(name="After:", value=", ".join(after_roles), inline=False)
-                    role.set_footer(text=f"User ID: {before.id}")
-                    role.set_author(name=time.strftime(fmt) + " - Role Update")
-                    role.set_thumbnail(url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    await channel.send(embed=role)
+                try:
+                    channel = await self.bot.fetch_channel(self.logs[GID]["Role_Logs"]["Channel"])
+                    time = datetime.datetime.now()
+                    fmt = '%H:%M:%S'
+                    if before.roles != after.roles:
+                        for roles in before.roles:
+                            before_roles.append(roles.name)
+                        before_roles.remove("@everyone")
+                        for roles in after.roles:
+                            after_roles.append(roles.name)
+                        after_roles.remove("@everyone")
+                        role = discord.Embed(colour=0xf59542, timestamp=datetime.datetime.utcnow())
+                        infomessage = f"__{before.name}__'s roles were updated"
+                        role.add_field(name="Info:", value=infomessage, inline=False)
+                        role.add_field(name="Before:", value=", ".join(before_roles), inline=False)
+                        role.add_field(name="After:", value=", ".join(after_roles), inline=False)
+                        role.set_footer(text=f"User ID: {before.id}")
+                        role.set_author(name=time.strftime(fmt) + " - Role Update")
+                        role.set_thumbnail(url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
+                        await channel.send(embed=role)
+                except Execption as e:
+                    return
 
 
 def setup(bot):

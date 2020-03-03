@@ -424,7 +424,7 @@ class cotd(commands.Cog):
     async def cotdchoose(self):
 
 
-        time = datetime.now().strftime("%H:%M:%S")
+        time = datetime.datetime.now().strftime("%H:%M:%S")
         if time == '00:00:00':
             chooselist = []
 

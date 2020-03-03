@@ -3,3 +3,4 @@ utils/config.json
 *.log
 modules/cogs/data/logs/logs.json
 *.webm
+utils/config.json

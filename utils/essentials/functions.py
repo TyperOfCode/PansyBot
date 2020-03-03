@@ -101,7 +101,7 @@ class func(commands.Cog):
         return embed
 
     def log(error):
-        file = open("./utils/logs/Hana.log","a")
+        file = open("./utils/logs/Error.log","a")
         file.write("[{}]: {} \n".format(datetime.datetime.utcnow().strftime("%d/%m/%Y at %H:%M:%S (GMT)"), error))
         file.close()
 
