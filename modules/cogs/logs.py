@@ -130,12 +130,12 @@ class Logs(commands.Cog):
                     self.logs[GID]["Role_Logs"]["Enabled"] = True
                     with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
-                        await ctx.send(embed=func.Editable_S(f"**Channel** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
+                        await ctx.send(embed=func.Editable_S(f"**Role** Logs Enabled", "", "Logs"), delete_after=config.deltimer)
                 else:
                     self.logs[GID]["Role_Logs"]["Enabled"] = False
                     with open("./modules/cogs/data/logs/logs.json", "w") as f:
                         json.dump(self.logs, f, indent=4)
-                        await ctx.send(embed=func.Editable_S(f"**Channel** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
+                        await ctx.send(embed=func.Editable_S(f"**Role** Logs Disabled", "", "Logs"), delete_after=config.deltimer)
         else:
             e = discord.Embed(title = f"Log Settings for {ctx.guild.name}", colour = 0x9bf442)
             e.add_field(name="Delete", value=str(self.logs[GID]['Delete_Logs']["Enabled"]))
