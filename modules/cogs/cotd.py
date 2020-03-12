@@ -4,6 +4,7 @@ import string
 import os
 
 from discord.utils import get
+from random import choice, randint
 from discord.ext import tasks, commands
 
 from utils.essentials import functions
