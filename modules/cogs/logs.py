@@ -336,7 +336,7 @@ class Logs(commands.Cog):
                             role.set_author(name=time.strftime(fmt) + " - Role Update")
                             role.set_thumbnail(url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
                             await channel.send(embed=role)
-                    except Execption as e:
+                    except Exception as e:
                         return
 
 
