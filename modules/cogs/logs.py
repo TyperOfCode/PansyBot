@@ -287,7 +287,7 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_update(self, before, after):
-        if after.guild:
+        if after:
             GID = str(after.id)
             if GID in self.logs:
                 if self.logs[GID]['Server_Logs']["Enabled"] == True:

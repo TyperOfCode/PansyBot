@@ -40,7 +40,7 @@ class Info(commands.Cog):
             description="Multifunctional Bot, constantly recieving updates.",
             colour = 0xeb8034
             )
-        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.icon_url)
+        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         embed.add_field(name="Github", value="[Github](https://github.com/TyperOfCode/PansyBot)", inline=True)
         embed.add_field(name="Need help?", value="PM Me <@!439327545557778433>", inline=True)
         embed.add_field(name="Currently Serving", value=f"{sum} Members", inline=True)

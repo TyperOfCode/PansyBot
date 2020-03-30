@@ -49,8 +49,11 @@ class Main(commands.Cog):
 
     @commands.Cog.listener(name="on_message")
     async def on_message_pingcheck(self, message):
-        if 439327545557778433 in message.raw_mentions:
-            await message.add_reaction("<a:malwdym:605144102857867294>")
+        try:
+            if 439327545557778433 in message.raw_mentions:
+                await message.add_reaction("<a:malwdym:605144102857867294>")
+        except Exception:
+            return
 
     @commands.Cog.listener(name="on_message")
     async def on_message_prefix(self, message):

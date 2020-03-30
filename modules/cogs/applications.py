@@ -32,7 +32,7 @@ class Applications(commands.Cog):
                 try:
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=EmojisCheck)
                 except asyncio.TimeoutError:
-                    await start.delete()
+                    await double_check.delete()
                     await ctx.author.send(embed=timeoutEmbed, delete_after=60)
                 else:
                     if str(reaction.emoji) == emojis[0]:
