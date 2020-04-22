@@ -1,104 +1,108 @@
-﻿from discord.ext import commands, tasks
-from typing import Union
-import asyncio
 import datetime
-import discord.utils
-import traceback
+import discord
+import time
 
-from random import randint
+from discord.ext import commands,tasks
 
 class RateMyAvatar(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot: commands.Bot = bot
-        self.rating_channel_id = 669566246227935263
-        self.rating_message_id: Union[int, None] = None
-        self.rated_user_id: Union[int, None] = None
-        self.rating_cooldown = {}
-        self.cooldown_time = 24
-        self.numeric_reaction_to_rating = {'1️⃣': 1, '2️⃣': 2, '3️⃣': 3, '4️⃣': 4, '5️⃣': 5, '6️⃣': 6, '7️⃣': 7, '8️⃣': 8, '9️⃣': 9, '🔟': 10}
-        self.number_rating_to_emoji_reation = {1: 626479116643860480, 2: 593137372615671843, 3: 660459012650827777, 4: 642018487996383242, 5: 587373930579230724, 6: 607838396349677568, 7: 662915142878494730, 8: 593872466095636500, 9: 614525816360927233, 10: 608278534456344577,}
+    def __init__(self, bot):
+        self.bot = bot
 
-        self.initialize_rating.start()
+        self.rating_channel_id = 700865540213833760
+        self.rating_channel = None
 
-    async def __send_avatar_to_rate(self, rating_user: Union[discord.User, discord.Member], rating_channel: discord.abc.GuildChannel):
-        embed = discord.Embed(title=f'Rate {rating_user.display_name}\'s avatar from 1-10!', color=discord.Color.blurple())
-        embed.set_image(url=rating_user.avatar_url)
-        message = await rating_channel.send(embed=embed)
+        self.rating_message = None
 
-        self.rating_message_id = message.id
+        self.users = {}
 
-        for numeric_reaction in self.numeric_reaction_to_rating:
-            await message.add_reaction(numeric_reaction)
-            await asyncio.sleep(1/4)
+        self.user_to_rate = None
+
+        self.cooldown = 2
+
+        self.emotes = {'1️⃣': 1, '2️⃣': 2, '3️⃣': 3, '4️⃣': 4, '5️⃣': 5, '6️⃣': 6, '7️⃣': 7, '8️⃣': 8, '9️⃣': 9, '🔟': 10}
+
+        self.reactions = {1: "<:malSaayaWhaa:640472459350376468>", 2: "<a:malKawaiispooked:653601138720899101>", 3: "<:malKanonCry:644320461135806464>", 4: "<:malThinku:627916285912678429>", 5: "<:malNezukoAnger:625754858405888009>", 6: "<a:malPleaseStop:613541345004486657>", 7: "<:malKasuPray:686770171523891221>", 8: "<:malPouts:642018487996383242>", 9: "<:malYayy:608273843710197761>", 10: "<a:malYay:608280367580971017>"}
+
+        self.init.start()
+        self.clearCooldown.start()
 
     @tasks.loop(count=1)
-    async def initialize_rating(self):
-        await self.bot.wait_until_ready()
+    async def init(self):
+        try:
+            self.rating_channel = await self.bot.fetch_channel(self.rating_channel_id)
+            """if self.rating_channel is None:
+                print('[RateMyAvatar] The #ratemyavatar channel does not exist. Shutting down the RateMyAvatar cog.')
+                self.bot.unload_extension(f"modules.cogs.ratemyavatar1")"""
 
-        rating_channel = self.bot.get_channel(self.rating_channel_id)
-        if rating_channel is None:
-            print('[RateMyAvatar] The #ratemyavatar channel does not exist. Shutting down the RateMyAvatar cog.')
-            self.bot.remove_cog(self.qualified_name)
+            message = await self.rating_channel.fetch_message(self.rating_channel.last_message_id)
 
-        rating_user = None
-        guild = self.bot.get_guild(540784184470274069)
-        members = guild.members
-        choice = randint(0, len(members))
-        rating_user = members[choice]
+            self.user_to_rate = message.author
 
-        self.rating_cooldown[rating_user.id] = datetime.datetime.now()
-        await self.__send_avatar_to_rate(rating_user, rating_channel)
+            self.rating_message = await self.SendAvatar()
+        except Exception as e:
+            print(e)
 
+    @tasks.loop(seconds=5)
+    async def clearCooldown(self):
+        for user in self.users:
+            if datetime.datetime.now() > self.users[user]:
+                try:
+                    del self.users[user]
+                    return
+                except:
+                    return
 
-    @commands.Cog.listener('on_reaction_add')
-    async def reaction_handler(self, reaction: discord.Reaction, reaction_user: Union[discord.User, discord.Member]):
-
-        if reaction_user.bot:
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        print(payload)
+        #user = await self.bot.fetch_user(payload.user_id)
+        if payload.member.bot or payload.member == self.user_to_rate:
             return
 
-        if reaction.message.id != self.rating_message_id:
+        if payload.message_id != self.rating_message.id:
+            print(f"MessageID Didnt Match {payload.message_id} --- {self.rating_message.id}")
             return
 
-        if reaction_user.id in self.rating_cooldown:
-            user_cooldown = self.rating_cooldown[reaction_user.id]
+        if payload.user_id in self.users:
+            return await self.CooldownMessage(payload.member)
 
-            now = datetime.datetime.now()
-            difference = now - self.rating_cooldown[reaction_user.id]
-            hours = difference.total_seconds() / 3600
+        avatar_rating = self.emotes[str(payload.emoji)]
 
-            if hours < self.cooldown_time:
-                await reaction.remove(reaction_user)
-                return
-        else:
-            self.rating_cooldown[reaction_user.id] = datetime.datetime.now()
+        emote_rating = self.reactions[avatar_rating]
 
-        # check if the rating channel exists still
-        guild = self.bot.get_guild(540784184470274069)
-        rating_channel = guild.get_channel(self.rating_channel_id)
-        if rating_channel is None:
-            print('[RateMyAvatar] The #ratemyavatar channel does not exist. Shutting down the RateMyAvatar cog.')
-            self.bot.remove_cog(self.qualified_name)
-            return
+        await self.rating_channel.send(f"{self.user_to_rate.mention}, your avatar has been rated {avatar_rating}/10 by {payload.member.mention}! {emote_rating}")
 
-        # if the user adds a foreign emoji or it's the user meant to be reacted to, remove reaction
-        if not str(reaction) in self.numeric_reaction_to_rating or reaction_user.id == self.rated_user_id:
-            await reaction.remove(reaction_user)
-            return
+        self.user_to_rate = payload.member
 
-        # check if the user exists still (if they left)
-        reacted_message_user = self.bot.get_user(self.rated_user_id)
-        if reacted_message_user is None:
-            await rating_channel.send(f'It seems that the user that you rated has left, {reaction_user.mention}! Let\'s rate your avatar instead!')
-        else:
-            avatar_rating_value = self.numeric_reaction_to_rating[str(reaction)]
-            avatar_rating_emoji_id = self.number_rating_to_emoji_reation[avatar_rating_value]
-            avatar_rating_emoji = str(self.bot.get_emoji(avatar_rating_emoji_id))
+        self.users[self.user_to_rate.id] = datetime.datetime.now() + datetime.timedelta(hours=self.cooldown)
 
-            await rating_channel.send(f'{reacted_message_user.mention}, your avatar has been rated {avatar_rating_value}/10 by {reaction_user.mention}! {avatar_rating_emoji}')
+        self.rating_message = await self.SendAvatar()
 
-        self.rated_user_id = reaction_user.id
-        await self.__send_avatar_to_rate(reaction_user, rating_channel)
+    async def SendAvatar(self):
+        embed = discord.Embed(colour=self.user_to_rate.top_role.colour)
 
+        embed.set_image(url=self.user_to_rate.avatar_url)
+        embed.set_author(name=f"Rate {self.user_to_rate.display_name}'s avatar!")
 
-def setup(bot: commands.Bot):
+        e = await self.rating_channel.send(embed=embed)
+
+        for emote in self.emotes:
+            await e.add_reaction(emote)
+
+        return e
+
+    def CalcTime(self, userid):
+        delta =  self.users[userid] - datetime.datetime.now()
+        secs = delta.total_seconds()
+        return secs
+
+    async def CooldownMessage(self, user):
+        secs = self.CalcTime(user.id)
+        coolTime = time.gmtime(secs)
+        embed = discord.Embed(description="You can rate another avatar in {}".format(time.strftime("%H hours, %M minutes and %S seconds.", coolTime)), colour=discord.Colour(0xff0000))
+        embed.set_author(name=f"You are on cooldown!")
+
+        await user.send(embed=embed)
+
+def setup(bot):
     bot.add_cog(RateMyAvatar(bot))
