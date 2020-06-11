@@ -4,10 +4,11 @@ import string
 import os
 
 from discord.utils import get
-from random import choice
+from random import choice, randint
 from discord.ext import tasks, commands
 
-from utils import functions
+from utils.essentials import functions
+from utils.essentials.functions import func
 
 config = functions.get("utils/config.json")
 

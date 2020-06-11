@@ -1,6 +1,7 @@
 import mysql.connector
 
-from utils import functions
+from utils.essentials.functions import func
+from utils.essentials import functions
 
 config = functions.get("utils/config.json")
 global mydb
