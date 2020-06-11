@@ -1,11 +1,10 @@
 {
-  "token": "",
+  "token": "NzE2Nzg1MzY0MTgxNzEyOTkz.XtQ05Q.onVXW6xnkbdNaahuX9oH5YGOy18",
   "prefix": "!",
-  "deltimer": 15,
 
-  "mysql_host": "localhost",
-  "mysql_user": "",
-  "mysql_pass": "",
-  "mysql_db" : "",
+  "mysql_host": "178.128.162.1",
+  "mysql_user": "devolution",
+  "mysql_pass": "Mattluke106",
+  "mysql_db" : "pansy",
   "mysql_port" : "3306"
 }

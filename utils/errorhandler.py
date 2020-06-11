@@ -1,9 +1,8 @@
 import discord
-import traceback
 import datetime
 
 from discord.ext import commands
-from utils.essentials.functions import func
+from utils.functions import func
 
 class ErrorHandler(commands.Cog):
     def __init__(self, bot):
