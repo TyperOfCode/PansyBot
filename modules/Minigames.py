@@ -24,8 +24,11 @@ class Minigames(commands.Cog):
 
             lastWord = await message.channel.history(limit=2).flatten()
 
-            if not int(message.content) == (int(lastWord[1].content) + 1):
-                return await message.delete()
+            try:
+                if not int(message.content) == (int(lastWord[1].content) + 1):
+                    return await message.delete()
+            except:
+                return
 
             if lastWord[1].author.id == message.author.id:
                 await message.delete()

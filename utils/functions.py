@@ -18,7 +18,7 @@ class func(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def NoPerm():
+    def NoPerm(self):
         embed = discord.Embed(
             title = "Access Denied",
             description = "Insufficient Permission",

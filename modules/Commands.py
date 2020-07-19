@@ -15,6 +15,35 @@ class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    async def help(self, ctx):
+
+        Commands = f"""
+{ctx.prefix}cog - Load, Unload or Reload cogs
+{ctx.prefix}access - Add a user to admin / owner
+{ctx.prefix}shutdown - Turn the bot offline
+{ctx.prefix}lockdown - Lockdown the server
+{ctx.prefix}channel - Channel of the day
+"""
+
+        ColorRoles = f"""
+{ctx.prefix}colour - Pick a colour
+{ctx.prefix}colour clear - Removes your colour role
+{ctx.prefix}color add - Add a role with access
+{ctx.prefix}color remove - Remove a role from access
+{ctx.prefix}color list - List roles with access
+"""
+        Squads = """
+
+"""
+
+        embed = discord.Embed(title="Help", colour=0xcf53ee)
+        embed.add_field(name="Commands", value=Commands, inline=False)
+        embed.add_field(name="Colour Roles", value=ColorRoles, inline=False)
+        embed.add_field(name="Squads", value="Coming soon", inline=False)
+
+        await ctx.author.send(embed=embed)
+
     # Cog Commands
 
     @commands.group(invoke_without_command=True)
@@ -41,11 +70,14 @@ class Commands(commands.Cog):
 
     @cog.group(invoke_without_command=True)
     async def unload(self, ctx, cog: str = None):
-        if not cog:
-            await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
+        if not self.owner_check(ctx.author.id):
+            return
 
-        if cog != "admin":
-            await ctx.send(embed=func.ErrorEmbed("That is a required cog. Try another"))
+        if not cog:
+            return await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
+
+        if cog == "Commands":
+            return await ctx.send(embed=func.ErrorEmbed("That is a required cog. Try another"))
 
         try:
             self.bot.unload_extension(f"modules.{cog}")
@@ -57,23 +89,27 @@ class Commands(commands.Cog):
 
     @cog.group(invoke_without_command=True)
     async def reload(self, ctx, cog: str = None):
-        if not cog:
-            await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
+        if not self.owner_check(ctx.author.id):
+            return
 
-            try:
-                self.bot.unload_extension(f"modules.{cog}")
-                self.bot.load_extension(f"modules.{cog}")
-                await ctx.send(embed=func.Embed(f"{cog} was successfully reloaded."))
-            except Exception as error:
-                await ctx.send(embed=func.ErrorEmbed(f"{cog} failed to unload."))
-                await ctx.author.send(error)
-        else:
-            await ctx.send(embed=func.ErrorEmbed("Please name a cog to reload."))
+        if not cog:
+            return await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
+
+        try:
+            self.bot.unload_extension(f"modules.{cog}")
+            self.bot.load_extension(f"modules.{cog}")
+            await ctx.send(embed=func.Embed(f"{cog} was successfully reloaded."))
+        except Exception as error:
+            await ctx.send(embed=func.ErrorEmbed(f"{cog} failed to unload."))
+            await ctx.author.send(error)
 
     @cog.group(invoke_without_command=True)
     async def list(self, ctx):
+        if not self.owner_check(ctx.author.id):
+            return
+
         cogs = []
-        for file in os.listdir("modules/cogs"):
+        for file in os.listdir("modules"):
             if file.endswith(".py"):
                 name = file[:-3]
                 cogs.append(name)
@@ -102,8 +138,7 @@ class Commands(commands.Cog):
             if self.set_access(user, table):
                 await ctx.send(embed=func.Embed(f"Added {user.name} to {table}"))
             else:
-                await ctx.send(
-                    embed=func.ErrorEmbed("Something went wrong. Please try again"))
+                await ctx.send(embed=func.ErrorEmbed("Something went wrong. Please try again"))
         else:
             await ctx.send(embed=func.ErrorEmbed("That user already has access rights"))
 
@@ -127,10 +162,6 @@ class Commands(commands.Cog):
                     embed=func.ErrorEmbed("Something went wrong. Please try again"))
         else:
             await ctx.send(embed=func.ErrorEmbed("That user has no access rights"))
-
-
-
-
 
     # ---
 
@@ -162,7 +193,6 @@ class Commands(commands.Cog):
                 await channels.set_permissions(role, overwrite=overwrite)
             await ctx.send("Lock Down Removed", delete_after=30)
 
-    # ---
 
     # Functions
 

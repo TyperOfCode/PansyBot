@@ -41,7 +41,7 @@ class AnimeForm(commands.Cog):
             2: "<a:2_mal:658785722265894932>",
             1: "<a:1_mal:658785745804328980>",
             0: "<a:0_mal:658785774258487299>",
-            'SKIP': 'â›”'
+            'SKIP': '⛔'
         }
 
     @tasks.loop(hours=2)

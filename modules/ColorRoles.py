@@ -21,9 +21,16 @@ class Colour_Roles(commands.Cog):
 
         self.removeRoles.start()
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        guild = self.bot.get_guild(540784184470274069)
+        self.spam = discord.utils.get(guild.text_channels, id=self.spam_id)
 
-    @tasks.loop(hours=1)
+    @tasks.loop(minutes=1)
     async def removeRoles(self):
+
+        await self.bot.wait_until_ready()
+
         users = []
 
         guild = self.bot.get_guild(540784184470274069)
@@ -31,31 +38,38 @@ class Colour_Roles(commands.Cog):
 
         for color in self.color_roles:
             role = discord.utils.get(guild.roles, id=color)
-
             for member in role.members:
-                users.append(member.id)
+                if not member.id in users:
+                    users.append(member.id)
 
         for id in users:
             usern = guild.get_member(id)
 
-            for i in supporter_roles:
-                if i[0] in usern.roles:
-                    users.remove(usern)
+            user_roles = []
+            user_roles_strs = []
 
-            for roleid in self.color_roles:
-                role = discord.utils.get(guild.roles, id=roleid)
-                if role in usern.roles:
-                    await usern.remove_roles(role)
+            for role in usern.roles:
+                user_roles.append(role.id)
+                user_roles_strs.append(str(role.id))
 
+            if not (set(supporter_roles) & set(user_roles_strs)):
+
+                print(f"Removing from {usern.name}")
+
+                roles_to_remove = set(user_roles) & set(self.color_roles)
+
+                for u in roles_to_remove:
+                    roleobj = discord.utils.get(guild.roles, id=int(u))
+                    await usern.remove_roles(roleobj)
 
     @commands.group(invoke_without_command=True, aliases=["colour"])
-    async def color(self, ctx, number:int=None):
+    async def color(self, ctx, number=None):
 
-        if not self.spam:
-            self.SetVals(ctx.guild)
+        if not number.isdigit():
+            return
 
         if not await self.is_supporter(ctx.author):
-            return await func.NoPerm()
+            return await ctx.send(embed=func.NoPerm(self))
 
         if ctx.channel.id != self.spam_id:
             return await self.spam.send(f"{ctx.author.mention} Try here", delete_after=30)
@@ -84,9 +98,6 @@ class Colour_Roles(commands.Cog):
 
     @color.group(invoke_without_command=True)
     async def clear(self, ctx):
-
-        if not self.spam:
-            self.SetVals(ctx.guild)
 
         if not await self.is_supporter(ctx.author):
             return
@@ -119,7 +130,6 @@ class Colour_Roles(commands.Cog):
         else:
             await ctx.send(embed=func.ErrorEmbed("That role is already in the database"))
 
-
     @color.group(invoke_without_command=True)
     async def remove(self, ctx, roleid : int = None):
         if not roleid:
@@ -134,7 +144,6 @@ class Colour_Roles(commands.Cog):
             await ctx.send(embed=func.Embed(f"Removed {role.name} from the database"))
         else:
             await ctx.send(embed=func.ErrorEmbed("That role is not in the database"))
-
 
     @color.group(invoke_without_command=True)
     async def list(self, ctx):
@@ -202,11 +211,6 @@ class Colour_Roles(commands.Cog):
             list.append(Row[0])
 
         return list
-
-    def SetVals(self, guild):
-        self.spam = discord.utils.get(guild.text_channels, id=self.spam_id)
-
-        return
 
 
 def setup(bot):
