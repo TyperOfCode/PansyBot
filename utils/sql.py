@@ -269,8 +269,7 @@ def GetAccess(userid):
     try:
         cur.execute(f"SELECT Access FROM `{config.mysql_db}`.`access` WHERE User = '{userid}'")
         row = cur.fetchone()
-        print(row)
-
+        
         if row:
             return row[0]
         else:
