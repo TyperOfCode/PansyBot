@@ -264,13 +264,12 @@ def closeAccount(id):
 # ------------------ Access
 
 def GetAccess(userid):
+    mydb = createConnection()
+    cur = mydb.cursor()
     try:
-        mydb = createConnection()
-        cur = mydb.cursor(buffered=True)
-        query = (f"SELECT Access FROM `{config.mysql_db}`.`access` WHERE User = {userid}")
-        cur.execute(query)
-
+        cur.execute(f"SELECT Access FROM `{config.mysql_db}`.`access` WHERE User = '{userid}'")
         row = cur.fetchone()
+        print(row)
 
         if row:
             return row[0]
@@ -280,7 +279,7 @@ def GetAccess(userid):
         mydb.close()
 
 def isStaff(user):
-    if isOwner(user.id) or isAdmin(user.id):
+    if isOwner(user) or isAdmin(user):
         return True
 
     return False
@@ -322,14 +321,14 @@ def DelAccess(user):
 
     return False
 
-def isOwner(UID):
-    access = GetAccess(UID)
+def isOwner(user):
+    access = GetAccess(user.id)
 
     if access == 2:
         return True
 
-def isAdmin(UID):
-    access = GetAccess(UID)
+def isAdmin(user):
+    access = GetAccess(user.id)
 
     if access == 1 or access == 2:
         return True
@@ -337,19 +336,19 @@ def isAdmin(UID):
 # ------------- Color Roles
 
 def delSupportRole(roleid):
-        if isSupporter(roleid):
-            mydb = sql.createConnection()
-            cur = mydb.cursor()
-        try:
-            cur.execute(f"DELETE from `colour_roles` WHERE roleid = '{roleid}'")
-            mydb.commit()
-            return True
-        finally:
-            mydb.close()
+    if isSupporter(roleid):
+        mydb = createConnection()
+        cur = mydb.cursor()
+    try:
+        cur.execute(f"DELETE from `colour_roles` WHERE roleid = '{roleid}'")
+        mydb.commit()
+        return True
+    finally:
+        mydb.close()
 
 def addSupportRole(roleid):
     if not isSupporter(roleid):
-        mydb = sql.createConnection()
+        mydb = createConnection()
         cur = mydb.cursor()
     try:
         cur.execute(f"INSERT into `colour_roles` (roleid) VALUES ({roleid})")
@@ -369,7 +368,7 @@ async def isSupporter(user):
 
 def getSupportRoles():
     list = []
-    mydb = sql.createConnection()
+    mydb = createConnection()
     cur = mydb.cursor()
     try:
         cur.execute(f"SELECT roleid from colour_roles")

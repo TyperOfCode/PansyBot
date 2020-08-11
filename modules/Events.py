@@ -35,18 +35,22 @@ class Events(commands.Cog):
 
     @commands.Cog.listener(name="on_message")
     async def on_message_check(self, message):
-        if 'Stig' in message.content.split() or 'stig' in message.content.split():
+
+        user = None
+
+        if 'stig' in message.content.lower().replace(' ', ''):
             user = await self.bot.fetch_user(439327545557778433)
 
-        if 'dirt' in message.content.lower().replace(' ',''):
+        if 'dirt' in message.content.lower().replace(' ', ''):
             user = await self.bot.fetch_user(636808158521589770)
 
-        embed = discord.Embed(colour=0xc70300, description=message.content)
-        embed.add_field(name="Who", value=message.author.mention, inline=True)
-        embed.add_field(name="Where", value=message.channel.name, inline=True)
-        embed.add_field(name="Jump", value=f"[Link]({message.jump_url})", inline=True)
+        if user:
+            embed = discord.Embed(colour=0xc70300, description=message.content)
+            embed.add_field(name="Who", value=message.author.mention, inline=True)
+            embed.add_field(name="Where", value=message.channel.mention, inline=True)
+            embed.add_field(name="Jump", value=f"[Link]({message.jump_url})", inline=True)
 
-        await user.send(embed=embed)
+            await user.send(embed=embed)
 
     @commands.Cog.listener(name="on_member_update")
     async def on_verified_role_given(self, before, after):
