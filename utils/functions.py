@@ -1,4 +1,3 @@
-import datetime
 import discord
 import json
 
@@ -18,7 +17,7 @@ class func(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def NoPerm(self):
+    def NoPerm():
         embed = discord.Embed(
             title = "Access Denied",
             description = "Insufficient Permission",

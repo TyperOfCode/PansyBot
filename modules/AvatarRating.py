@@ -2,7 +2,7 @@ import datetime
 import discord
 import time
 
-from discord.ext import commands,tasks
+from discord.ext import commands, tasks
 
 class RateMyAvatar1(commands.Cog):
     def __init__(self, bot):

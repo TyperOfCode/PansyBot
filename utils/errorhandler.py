@@ -21,22 +21,21 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.MissingPermissions):
             try:
-                return await ctx.send(
-                    embed=self.Embed("Uh oh.. I seem to be missing some permissions!"))
+                return await ctx.send(embed=self.Embed("Uh oh.. I seem to be missing some permissions!"))
             except discord.Forbidden:
                 pass
 
         elif isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(embed=self.Embed(f"{ctx.author.mention}, that command is currently cooling down!"))
+            return await ctx.send(embed=self.Embed(f"{ctx.author.mention}, that command is currently cooling down!"))
 
         elif isinstance(error, discord.Forbidden):
             try:
-                await ctx.send(embed=self.Embed("Uh oh.. I dont have permission to do that"))
+                return await ctx.send(embed=self.Embed("Uh oh.. I dont have permission to do that"))
             except discord.Forbidden:
                 pass
 
         elif isinstance(error, discord.HTTPException):
-            await ctx.send(embed=self.Embed(f"There was an error with your command, please notify Stig#1337 of this! Here it is: {error}"))
+           return await ctx.send(embed=self.Embed(f"There was an error with your command, please notify Stig#1337 of this! Here it is: {error}"))
 
         if ctx.command and error:
             await self.SendHook(str(error), ctx.command)

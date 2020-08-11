@@ -1,8 +1,14 @@
-import os
-import time
+import platform
+import datetime
 import discord
+import aiohttp
+import time
+import os
 
+from psutil import virtual_memory
 from discord.ext import commands
+from psutil import cpu_percent
+from random import randint
 
 from utils import functions, sql
 from utils.functions import func
@@ -22,8 +28,9 @@ class Commands(commands.Cog):
 {ctx.prefix}cog - Load, Unload or Reload cogs
 {ctx.prefix}access - Add a user to admin / owner
 {ctx.prefix}shutdown - Turn the bot offline
-{ctx.prefix}lockdown - Lockdown the server
 {ctx.prefix}channel - Channel of the day
+{ctx.prefix}ship [@user] [@user] - Ship people
+{ctx.prefix}binfo - Bot info
 """
 
         ColorRoles = f"""
@@ -48,15 +55,15 @@ class Commands(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def cog(self, ctx):
-        if not self.owner_check(ctx.author.id):
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
         await ctx.send(embed=func.Embed("**cog load** - Load a cog.\n**cog unload** - Unload a cog.\n**cog reload** - Reload a cog\n**cog list** - Lists all cogs."))
 
     @cog.group(invoke_without_command=True)
     async def load(self, ctx, cog: str = None):
-        if not self.owner_check(ctx.author.id):
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
         if not cog:
             await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
@@ -70,8 +77,8 @@ class Commands(commands.Cog):
 
     @cog.group(invoke_without_command=True)
     async def unload(self, ctx, cog: str = None):
-        if not self.owner_check(ctx.author.id):
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
         if not cog:
             return await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
@@ -89,8 +96,8 @@ class Commands(commands.Cog):
 
     @cog.group(invoke_without_command=True)
     async def reload(self, ctx, cog: str = None):
-        if not self.owner_check(ctx.author.id):
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
         if not cog:
             return await ctx.send(embed=func.ErrorEmbed("Please name a cog to load"))
@@ -105,8 +112,8 @@ class Commands(commands.Cog):
 
     @cog.group(invoke_without_command=True)
     async def list(self, ctx):
-        if not self.owner_check(ctx.author.id):
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
         cogs = []
         for file in os.listdir("modules"):
@@ -121,47 +128,79 @@ class Commands(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def access(self, ctx):
-        await ctx.send(embed=func.ErrorEmbed("Usage:\n\naccess add @user {access}\naccess remove @user {access}\n\n Access Types: admins & owners"))
+
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
+
+        await ctx.send(embed=func.ErrorEmbed(f"Usage:\n\n{ctx.prefix}access add @user [Type]\n{ctx.prefix}access remove @user\n{ctx.prefix}access list\n\n Access Types: admin & owner"))
 
     @access.group(invoke_without_command=True)
-    async def add(self, ctx, user: discord.User = None, table: str = None):
-        if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
-            return
+    async def add(self, ctx, user: discord.User = None, access: str = None):
 
-        if not user or not table:
+        types = ['owner', 'admin']
+
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
+
+        if not user or not access:
             return await ctx.send(embed=func.ErrorEmbed(f"Mention a user & access rank"))
 
-        if table != "admins" or table != "owners":
-            return await ctx.send(embed=func.ErrorEmbed(f"Please type 'admins' or 'owners'"))
+        if access not in types:
+            return await ctx.send(embed=func.ErrorEmbed(f"Please type 'admin' or 'owner'"))
 
-        if not self.has_access(user):
-            if self.set_access(user, table):
-                await ctx.send(embed=func.Embed(f"Added {user.name} to {table}"))
+        if access == 'owner':
+            type = 2
+
+        elif access == 'admin':
+            type = 1
+
+        if not sql.isStaff(user):
+            if sql.SetAccess(user, type):
+                await ctx.send(embed=func.Embed(f"Gave {user.mention} {access}."))
             else:
                 await ctx.send(embed=func.ErrorEmbed("Something went wrong. Please try again"))
         else:
             await ctx.send(embed=func.ErrorEmbed("That user already has access rights"))
 
     @access.group(invoke_without_command=True)
-    async def remove(self, ctx, user: discord.User = None, table: str = None):
+    async def remove(self, ctx, user: discord.User = None):
 
-        if self.owner_check(ctx.author.id) or ctx.author.id == 439327545557778433:
-            return
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
 
-        if not user or not table:
-            return await ctx.send(embed=func.ErrorEmbed(f"Mention a user & access rank"))
+        if not user:
+            return await ctx.send(embed=func.ErrorEmbed(f"Mention a user"))
 
-        if table != "admins" or table != "owners":
-            return await ctx.send(embed=func.ErrorEmbed(f"Please type 'admins' or 'owners'"))
-
-        if self.has_access(user):
-            if self.remove_access(user, table):
-                await ctx.send(embed=func.Embed(f"Removed {user.name} from {table}"))
+        if sql.isStaff(user):
+            if sql.DelAccess(user):
+                await ctx.send(embed=func.Embed(f"Removed {user.mention}'s rights"))
             else:
-                await ctx.send(
-                    embed=func.ErrorEmbed("Something went wrong. Please try again"))
+                await ctx.send(embed=func.ErrorEmbed("Something went wrong. Please try again"))
         else:
             await ctx.send(embed=func.ErrorEmbed("That user has no access rights"))
+
+    @access.group(invoke_without_command=True)
+    async def list(self, ctx):
+
+        if not sql.isOwner(ctx.author.id):
+            return await ctx.send(embed=func.NoPerm())
+
+        unformatted = sql.getallAccess()
+
+        formatted = []
+
+        for i in unformatted:
+            user = await self.bot.fetch_user(i[0])
+
+            if i[1] == 1:
+                type = "Admin Access"
+
+            if i[1] == 2:
+                type = "Owner Access"
+
+            formatted.append(f"{user.mention} - {type}")
+
+        await ctx.send(embed=func.Embed("\n".join(formatted)))
 
     # ---
 
@@ -169,75 +208,85 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def shutdown(self, ctx):
+
+        if not sql.isOwner(ctx.author):
+            return await ctx.send(embed=func.NoPerm())
+
         await ctx.send("Shutting down...")
         await self.bot.logout()
 
     @commands.command()
-    async def lockdown(self, ctx, flag: str = None):
-        if not flag:
-            return await ctx.send(embed=func.ErrorEmbed(f"{ctx.prefix}lockdown - Locks all channels down from users with no roles\n\n**__Flags__** (Optional)\n**-s** - Starts the lockdown\n**-u** - Stops the lockdown",))
+    @commands.cooldown(1, 2, commands.BucketType.user)
+    async def ship(self, ctx, user:discord.User = None, user1: discord.User =None):
+        if not user or not user1:
+            return
 
-        elif flag == '-s':
-            for channels in ctx.guild.channels:
-                role = discord.utils.get(ctx.guild.roles, name="@everyone")
-                overwrite = discord.PermissionOverwrite()
-                overwrite.send_messages = False
-                await channels.set_permissions(role, overwrite=overwrite)
-            await ctx.send("Locked down all channels", delete_after=30)
+        if ctx.channel.id == 542291426051096606:
+            return
 
-        elif flag == '-u':
-            for channels in ctx.guild.channels:
-                role = discord.utils.get(ctx.guild.roles, name="@everyone")
-                overwrite = discord.PermissionOverwrite()
-                overwrite.send_messages = None
-                await channels.set_permissions(role, overwrite=overwrite)
-            await ctx.send("Lock Down Removed", delete_after=30)
+        matchability = randint(0, 100)
 
+        if user.id == 682585660355510275 or user1.id == 682585660355510275:
+            if user.id == 439327545557778433 or user1.id == 439327545557778433: # If Stig and Hana
+                matchability = 100
+            else:
+                matchability = 0
 
-    # Functions
+        embed = discord.Embed(
+            description=f"{user.mention} ❤ {user1.mention}",
+            colour=0xcf53ee,
+        )
+        embed.set_footer(text=f"{matchability}% Match")
 
-    def has_access(self, user):
-        if self.owner_check(user.id) or self.admin_check(user.id):
-            return True
+        await ctx.send(embed=embed)
 
-        return False
+    @commands.command(aliases=["binfo", "info"])
+    @commands.guild_only()
+    async def botinfo(self, ctx):
+        activeServers = self.bot.guilds
+        sum = 0
+        for s in activeServers:
+            sum += len(s.members)
 
-    def set_access(self, user, table):
-        if not self.has_access(user):
-            mydb = sql.createConnection()
-            cur = mydb.cursor()
-            cur.execute(f"INSERT into `{config.mysql_db}`.`{table}` VALUES ('{user.id}')")
-            mydb.commit()
-            return True
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        uptime = str(datetime.timedelta(seconds=difference))
 
-        return False
+        dapi = time.time()
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://discord.com/api/'):
+                dapi2 = time.time()
 
-    def remove_access(self, user, table):
-        if self.has_access(user):
-            mydb = sql.createConnection()
-            cur = mydb.cursor()
-            cur.execute(f"DELETE FROM `{config.mysql_db}`.`{table}` WHERE id='{user.id}';")
-            mydb.commit()
-            return True
+        discordlatency = dapi2 - dapi
 
-        return False
+        connected_desc = f"""```
 
-    def owner_check(self, UID):
-        UID = str(UID)
-        if sql.Entry_Check(UID, "id", "owners"):
-            return True
+- Discord API ({int(round(discordlatency, 2) * 100)}ms)
+- {len(activeServers)} Guilds
+- {sum} Users
+- Shards 1 / 1 ({int(round(self.bot.latency, 2) * 100)}ms)
+- Cluster 0 / 0 (0ms)```"""
 
-        return False
+        coding_desc = f"""```
+- Language: Python {platform.python_version()}
+- Library: Discord.py
+- Version: {discord.__version__}```"""
 
-    def admin_check(self, UID):
-        UID = str(UID)
-        if sql.Entry_Check(UID, "id", "admins"):
-            return True
+        cluster_desc = f"""```
+- OS: {platform.system()}
+- CPU Usage: {cpu_percent(interval=None, percpu=False)}%
+- RAM Usage: {virtual_memory().percent}%
+- Uptime: {uptime}```"""
 
-        if sql.Entry_Check(UID, "id", "owners"):
-            return True
+        embed = discord.Embed(colour=0xcf53ee)
 
-        return False
+        embed.set_author(name="Bot Information")
+
+        embed.add_field(name="Connected", value=connected_desc, inline=True)
+        embed.add_field(name="Coding Stuff", value=coding_desc, inline=True)
+        embed.add_field(name="Cluster", value=cluster_desc, inline=False)
+
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Commands(bot))
